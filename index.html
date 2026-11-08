@@ -1,0 +1,3771 @@
+<!DOCTYPE html>
+<html class="scroll-smooth dark" lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="format-detection" content="telephone=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="FinIsland">
+<meta name="theme-color" content="#020408" id="theme-color-meta">
+<title>FinIsland — Калькулятор рассрочки</title>
+
+<!-- Open Graph / Meta Preview for Telegram, WhatsApp, Social Media -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="FinIsland — Калькулятор рассрочки">
+<meta property="og:description" content="Удобный и прозрачный расчет исламской рассрочки FinIsland. Работает на телефонах офлайн даже без интернета.">
+<meta property="og:image" content="icon-512.png">
+<meta property="og:image:width" content="512">
+<meta property="og:image:height" content="512">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="FinIsland — Калькулятор рассрочки">
+<meta name="twitter:description" content="Удобный расчет исламской рассрочки. Работает автономно без интернета.">
+<meta name="twitter:image" content="icon-512.png">
+
+<link rel="manifest" href="manifest.json">
+<!-- Favicons & Apple Touch Icons (All 24-bit RGB) -->
+<link rel="icon" type="image/svg+xml" href="favicon.svg?v=3">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png?v=3">
+<link rel="shortcut icon" href="favicon.ico?v=3">
+<link rel="apple-touch-icon" href="apple-touch-icon.png?v=3">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon-180x180.png?v=3">
+<link rel="apple-touch-icon" sizes="167x167" href="apple-touch-icon-167x167.png?v=3">
+<link rel="apple-touch-icon" sizes="152x152" href="apple-touch-icon-152x152.png?v=3">
+<link rel="apple-touch-icon" sizes="120x120" href="apple-touch-icon-120x120.png?v=3">
+<link rel="apple-touch-icon-precomposed" href="apple-touch-icon-precomposed.png?v=3">
+<!-- iOS Startup Splash Screens (RGB 24-bit) -->
+<link rel="apple-touch-startup-image" href="apple-splash-universal.png">
+<link rel="apple-touch-startup-image" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="apple-splash-1290x2796.png">
+<link rel="apple-touch-startup-image" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="apple-splash-1179x2556.png">
+<link rel="apple-touch-startup-image" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="apple-splash-1170x2532.png">
+<link rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="apple-splash-750x1334.png">
+<!-- Google Web Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..800&family=Inter:wght@400..800&family=Manrope:wght@400..800&family=Montserrat:wght@400..800&family=Plus+Jakarta+Sans:wght@400..800&family=Unbounded:wght@400..800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<!-- Anti-FOUC Theme & Font Initializer -->
+<script>
+(function() {
+    const params = new URLSearchParams(window.location.search);
+    
+    // Стиль оформления: по умолчанию 'classic-blue' (Фирменный FinIsland)
+    let style = params.get('style') || localStorage.getItem('app_design_style') || 'classic-blue';
+    if (!['classic-blue', 'neo-fintech', 'royal-navy', 'nordic-glass'].includes(style)) style = 'classic-blue';
+    document.documentElement.className = 'scroll-smooth dark style-' + style;
+    
+    // Режим: dark / light
+    let mode = params.get('theme') || localStorage.getItem('app_theme_mode') || 'dark';
+    if (mode === 'light') document.documentElement.classList.remove('dark');
+    else document.documentElement.classList.add('dark');
+    
+    // Шрифт: по умолчанию 'plus-jakarta' (Оригинальный шрифт интерфейса FinIsland)
+    const font = params.get('font') || localStorage.getItem('app_active_font') || 'plus-jakarta';
+    const fontMap = {
+        'plus-jakarta': "'Plus Jakarta Sans', sans-serif",
+        manrope: "'Manrope', sans-serif",
+        inter: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
+        montserrat: "'Montserrat', sans-serif",
+        golos: "'Golos Text', sans-serif",
+        unbounded: "'Unbounded', sans-serif"
+    };
+    const activeFamily = fontMap[font] || fontMap['plus-jakarta'];
+    const headingFamily = (font === 'plus-jakarta') ? "'Manrope', sans-serif" : activeFamily;
+    const numberFamily = (font === 'plus-jakarta') ? "'Manrope', sans-serif" : activeFamily;
+
+    document.documentElement.style.setProperty('--calc-font', activeFamily);
+    document.documentElement.style.setProperty('--calc-heading-font', headingFamily);
+    document.documentElement.style.setProperty('--calc-number-font', numberFamily);
+})();
+</script>
+<style>
+    /* CSS Reset & Base */
+    *, *::before, *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    :root {
+        --block-gap: 0.75rem;
+        --layout-max-width: 580px;
+        --layout-padding-x: 1rem;
+        --calc-font: 'Plus Jakarta Sans', sans-serif;
+        --calc-heading-font: 'Manrope', sans-serif;
+        --calc-number-font: 'Manrope', sans-serif;
+        --track-unfilled: rgba(0, 37, 84, 0.08);
+
+        /* Default: FinIsland Classic Dark */
+        --bg-body: #020408;
+        --text-body: #f0f5fa;
+        --orb-1: rgba(15, 80, 160, 0.18);
+        --orb-2: rgba(11, 55, 120, 0.14);
+        --orb-3: rgba(0, 30, 70, 0.22);
+        --card-bg: linear-gradient(135deg, rgba(20, 48, 90, 0.65) 0%, rgba(10, 28, 56, 0.60) 100%);
+        --card-border: rgba(255, 255, 255, 0.10);
+        --card-border-hover: rgba(56, 182, 255, 0.40);
+        --card-inner-glow: inset 0 1px 0 rgba(56, 182, 255, 0.12);
+        --accent-gold: #38b6ff;
+        --brand-blue: #0b4b89;
+        --logo-navy: #f0f5fa;
+        --logo-cyan: #38b6ff;
+        color-scheme: dark;
+        scrollbar-color: rgba(15, 112, 181, 0.35) transparent;
+    }
+    
+    /* 1. FinIsland Classic (Dark) */
+    html.style-classic-blue.dark {
+        --bg-body: #020408;
+        --text-body: #f0f5fa;
+        --orb-1: rgba(15, 80, 160, 0.18);
+        --orb-2: rgba(11, 55, 120, 0.14);
+        --orb-3: rgba(0, 30, 70, 0.22);
+        --track-unfilled: rgba(255, 255, 255, 0.08);
+        --card-bg: linear-gradient(135deg, rgba(20, 48, 90, 0.65) 0%, rgba(10, 28, 56, 0.60) 100%);
+        --card-border: rgba(255, 255, 255, 0.10);
+        --card-border-hover: rgba(56, 182, 255, 0.40);
+        --card-inner-glow: inset 0 1px 0 rgba(56, 182, 255, 0.12);
+        --accent-gold: #38b6ff;
+        --brand-blue: #0b4b89;
+        --logo-navy: #f0f5fa;
+        --logo-cyan: #38b6ff;
+        color-scheme: dark;
+        scrollbar-color: rgba(15, 112, 181, 0.35) transparent;
+    }
+
+    /* 1. FinIsland Classic (Light) */
+    html.style-classic-blue:not(.dark) {
+        --bg-body: #f0f4f8;
+        --text-body: #040d1a;
+        --orb-1: rgba(11, 75, 137, 0.16);
+        --orb-2: rgba(24, 182, 255, 0.14);
+        --orb-3: rgba(11, 75, 137, 0.12);
+        --track-unfilled: rgba(0, 37, 84, 0.08);
+        --card-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.75) 0%, rgba(245, 248, 253, 0.52) 100%);
+        --card-border: rgba(255, 255, 255, 0.95);
+        --card-border-hover: rgba(11, 75, 137, 0.35);
+        --card-inner-glow: inset 0 1px 1px rgba(255, 255, 255, 0.95);
+        --accent-gold: #0b4b89;
+        --brand-blue: #0b4b89;
+        --logo-navy: #002554;
+        --logo-cyan: #1072b4;
+        color-scheme: light;
+        scrollbar-color: rgba(11, 75, 137, 0.30) transparent;
+    }
+
+    /* 2. Neo-Fintech / Cyan Minimal (Dark) */
+    html.style-neo-fintech.dark {
+        --bg-body: #060a12;
+        --text-body: #f1f5f9;
+        --orb-1: rgba(0, 210, 255, 0.12);
+        --orb-2: rgba(2, 132, 199, 0.15);
+        --orb-3: rgba(6, 26, 51, 0.30);
+        --track-unfilled: rgba(255, 255, 255, 0.07);
+        --card-bg: linear-gradient(135deg, rgba(13, 24, 44, 0.85) 0%, rgba(8, 14, 28, 0.80) 100%);
+        --card-border: rgba(0, 210, 255, 0.22);
+        --card-border-hover: rgba(0, 210, 255, 0.45);
+        --card-inner-glow: inset 0 1px 0 rgba(0, 210, 255, 0.15);
+        --accent-gold: #00d2ff;
+        --brand-blue: #0077b6;
+        --logo-navy: #f1f5f9;
+        --logo-cyan: #00d2ff;
+        color-scheme: dark;
+        scrollbar-color: rgba(0, 210, 255, 0.25) transparent;
+    }
+
+    /* 2. Neo-Fintech / Cyan Minimal (Light) */
+    html.style-neo-fintech:not(.dark) {
+        --bg-body: #f8fafc;
+        --text-body: #091e42;
+        --orb-1: rgba(2, 132, 199, 0.10);
+        --orb-2: rgba(0, 210, 255, 0.08);
+        --orb-3: rgba(2, 132, 199, 0.06);
+        --track-unfilled: rgba(2, 132, 199, 0.08);
+        --card-bg: #ffffff;
+        --card-border: rgba(2, 132, 199, 0.18);
+        --card-border-hover: rgba(2, 132, 199, 0.38);
+        --card-inner-glow: inset 0 1px 1px rgba(255, 255, 255, 0.95);
+        --accent-gold: #0284c7;
+        --brand-blue: #0284c7;
+        --logo-navy: #091e42;
+        --logo-cyan: #0284c7;
+        color-scheme: light;
+        scrollbar-color: rgba(2, 132, 199, 0.25) transparent;
+    }
+
+    /* 3. Royal Navy / Deep Indigo (Dark) */
+    html.style-royal-navy.dark {
+        --bg-body: #040817;
+        --text-body: #f8fafc;
+        --orb-1: rgba(30, 64, 175, 0.25);
+        --orb-2: rgba(37, 99, 235, 0.15);
+        --orb-3: rgba(12, 18, 44, 0.35);
+        --track-unfilled: rgba(255, 255, 255, 0.08);
+        --card-bg: linear-gradient(135deg, rgba(24, 34, 72, 0.75) 0%, rgba(12, 18, 44, 0.70) 100%);
+        --card-border: rgba(96, 165, 250, 0.22);
+        --card-border-hover: rgba(96, 165, 250, 0.45);
+        --card-inner-glow: inset 0 1px 0 rgba(96, 165, 250, 0.15);
+        --accent-gold: #60a5fa;
+        --brand-blue: #1e40af;
+        --logo-navy: #f8fafc;
+        --logo-cyan: #60a5fa;
+        color-scheme: dark;
+        scrollbar-color: rgba(96, 165, 250, 0.30) transparent;
+    }
+
+    /* 3. Royal Navy / Deep Indigo (Light) */
+    html.style-royal-navy:not(.dark) {
+        --bg-body: #f1f5f9;
+        --text-body: #0a1128;
+        --orb-1: rgba(30, 64, 175, 0.14);
+        --orb-2: rgba(37, 99, 235, 0.10);
+        --orb-3: rgba(12, 18, 44, 0.08);
+        --track-unfilled: rgba(30, 64, 175, 0.08);
+        --card-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.90) 0%, rgba(240, 245, 255, 0.65) 100%);
+        --card-border: rgba(30, 64, 175, 0.16);
+        --card-border-hover: rgba(30, 64, 175, 0.35);
+        --card-inner-glow: inset 0 1px 1px rgba(255, 255, 255, 0.95);
+        --accent-gold: #1e40af;
+        --brand-blue: #1e40af;
+        --logo-navy: #0a1128;
+        --logo-cyan: #1e40af;
+        color-scheme: light;
+        scrollbar-color: rgba(30, 64, 175, 0.25) transparent;
+    }
+
+    /* 4. Nordic Glass / Frosted Island (Dark) */
+    html.style-nordic-glass.dark {
+        --bg-body: #030d1a;
+        --text-body: #f0f9ff;
+        --orb-1: rgba(56, 182, 255, 0.25);
+        --orb-2: rgba(14, 43, 73, 0.35);
+        --orb-3: rgba(3, 105, 161, 0.20);
+        --track-unfilled: rgba(255, 255, 255, 0.08);
+        --card-bg: linear-gradient(135deg, rgba(14, 43, 73, 0.55) 0%, rgba(6, 24, 44, 0.50) 100%);
+        --card-border: rgba(125, 211, 252, 0.25);
+        --card-border-hover: rgba(125, 211, 252, 0.50);
+        --card-inner-glow: inset 0 1px 0 rgba(125, 211, 252, 0.20);
+        --accent-gold: #7dd3fc;
+        --brand-blue: #0284c7;
+        --logo-navy: #f0f9ff;
+        --logo-cyan: #7dd3fc;
+        color-scheme: dark;
+        scrollbar-color: rgba(125, 211, 252, 0.30) transparent;
+    }
+
+    /* 4. Nordic Glass / Frosted Island (Light) */
+    html.style-nordic-glass:not(.dark) {
+        --bg-body: #f4f9fd;
+        --text-body: #021a30;
+        --orb-1: rgba(56, 182, 255, 0.18);
+        --orb-2: rgba(3, 105, 161, 0.12);
+        --orb-3: rgba(2, 132, 199, 0.10);
+        --track-unfilled: rgba(3, 105, 161, 0.08);
+        --card-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.82) 0%, rgba(230, 245, 255, 0.55) 100%);
+        --card-border: rgba(3, 105, 161, 0.18);
+        --card-border-hover: rgba(3, 105, 161, 0.35);
+        --card-inner-glow: inset 0 1px 1px rgba(255, 255, 255, 0.95);
+        --accent-gold: #0284c7;
+        --brand-blue: #0284c7;
+        --logo-navy: #021a30;
+        --logo-cyan: #0284c7;
+        color-scheme: light;
+        scrollbar-color: rgba(3, 105, 161, 0.25) transparent;
+    }
+
+    @media (min-width: 768px) {
+        :root {
+            --block-gap: 0.875rem;
+            --layout-max-width: 860px;
+            --layout-padding-x: 1.5rem;
+        }
+    }
+
+    @media (min-width: 1024px) {
+        :root {
+            --block-gap: 1.05rem;
+            --layout-max-width: 1040px;
+            --layout-padding-x: 1.75rem;
+        }
+    }
+
+    @media (min-width: 1280px) {
+        :root {
+            --block-gap: 1.15rem;
+            --layout-max-width: 1100px;
+            --layout-padding-x: 2rem;
+        }
+    }
+
+    html {
+        -webkit-text-size-adjust: 100%;
+        text-size-adjust: 100%;
+        scrollbar-gutter: stable;
+        overflow-y: auto;
+    }
+
+    body {
+        font-family: var(--calc-font);
+        background-color: var(--bg-body);
+        color: var(--text-body);
+        min-height: 100vh;
+        position: relative;
+        touch-action: manipulation;
+        padding-bottom: env(safe-area-inset-bottom);
+        transition: background-color 0.25s ease, color 0.25s ease;
+    }
+
+    /* Ambient Background Glow Layer */
+    .bg-ambient {
+        position: fixed;
+        inset: 0;
+        width: 100vw;
+        height: 100vh;
+        pointer-events: none;
+        z-index: -1;
+        background-color: var(--bg-body);
+        background-image: 
+            radial-gradient(circle at 15% 15%, var(--orb-1) 0%, transparent 55%),
+            radial-gradient(circle at 85% 45%, var(--orb-2) 0%, transparent 50%),
+            radial-gradient(circle at 50% 85%, var(--orb-3) 0%, transparent 60%);
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+        will-change: transform;
+        transition: background-color 0.25s ease, background-image 0.25s ease;
+    }
+
+    button, input, select, a {
+        touch-action: manipulation;
+        font-family: inherit;
+    }
+    
+    h1, h2, h3, h4, h5, h6, .calc-main-title { 
+        font-family: var(--calc-heading-font); 
+    }
+
+    .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        display: inline-block;
+        line-height: 1;
+        vertical-align: middle;
+        user-select: none;
+    }
+
+    /* Range Slider Styling (Pure white center for thumb in all modes) */
+    input[type="range"] {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 100%;
+        height: 5px;
+        border-radius: 9999px;
+        outline: none;
+        touch-action: pan-y;
+        cursor: pointer;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        height: 20px;
+        width: 20px;
+        border-radius: 50%;
+        background: #ffffff !important;
+        border: 2.5px solid var(--accent-gold);
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+        transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.15s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+        transform: translateZ(0);
+        will-change: transform;
+    }
+
+    .dark.style-classic-blue input[type="range"]::-webkit-slider-thumb {
+        border-color: #38b6ff;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6), 0 0 8px rgba(56, 182, 255, 0.40);
+    }
+    .dark.style-neo-fintech input[type="range"]::-webkit-slider-thumb {
+        border-color: #00d2ff;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6), 0 0 8px rgba(0, 210, 255, 0.40);
+    }
+    .dark.style-royal-navy input[type="range"]::-webkit-slider-thumb {
+        border-color: #60a5fa;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6), 0 0 8px rgba(96, 165, 250, 0.40);
+    }
+    .dark.style-nordic-glass input[type="range"]::-webkit-slider-thumb {
+        border-color: #7dd3fc;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6), 0 0 8px rgba(125, 211, 252, 0.40);
+    }
+    html:not(.dark).style-classic-blue input[type="range"]::-webkit-slider-thumb {
+        border-color: #0b4b89;
+        box-shadow: 0 2px 8px rgba(11, 75, 137, 0.25);
+    }
+    html:not(.dark).style-neo-fintech input[type="range"]::-webkit-slider-thumb {
+        border-color: #0284c7;
+        box-shadow: 0 2px 8px rgba(2, 132, 199, 0.25);
+    }
+    html:not(.dark).style-royal-navy input[type="range"]::-webkit-slider-thumb {
+        border-color: #1e40af;
+        box-shadow: 0 2px 8px rgba(30, 64, 175, 0.25);
+    }
+    html:not(.dark).style-nordic-glass input[type="range"]::-webkit-slider-thumb {
+        border-color: #0284c7;
+        box-shadow: 0 2px 8px rgba(3, 105, 161, 0.25);
+    }
+
+    input[type="range"]::-webkit-slider-thumb:hover, 
+    input[type="range"]::-webkit-slider-thumb:active {
+        transform: scale(1.18) translateZ(0);
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.50);
+    }
+
+    input[type="range"]::-moz-range-thumb {
+        height: 20px;
+        width: 20px;
+        border-radius: 50%;
+        background: #ffffff !important;
+        border: 2.5px solid var(--accent-gold);
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.30);
+        transition: transform 0.15s ease;
+    }
+
+    /* Brand Hero Logo Section */
+    .hero-brand-section {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0.75rem 0 0.25rem 0;
+        width: 100%;
+        transition: opacity 0.25s ease;
+    }
+    .hero-brand-logo {
+        width: clamp(200px, 48vw, 270px);
+        max-width: 100%;
+        height: auto;
+        display: block;
+    }
+    .hero-brand-logo .logo-navy {
+        fill: var(--logo-navy, #002554);
+        fill-rule: evenodd;
+        transition: fill 0.3s ease;
+    }
+    .hero-brand-logo .logo-cyan {
+        fill: var(--logo-cyan, #1072b4);
+        fill-rule: evenodd;
+        transition: fill 0.3s ease;
+    }
+    @media (min-width: 768px) {
+        .hero-brand-section {
+            padding: 1.25rem 0 0.5rem 0;
+        }
+        .hero-brand-logo {
+            width: clamp(260px, 24vw, 320px);
+        }
+    }
+
+    /* Settings Dropdown Popover (Attached to Calculator Icon) */
+    .settings-dropdown-popover {
+        position: absolute;
+        top: calc(100% + 0.65rem);
+        left: 0;
+        width: 19.5rem;
+        max-width: calc(100vw - 2rem);
+        background: #060b14;
+        border: 1px solid var(--card-border);
+        border-radius: 1.15rem;
+        box-shadow: 0 20px 48px rgba(0, 0, 0, 0.75), 0 6px 18px rgba(0, 0, 0, 0.45);
+        padding: 0.55rem;
+        z-index: 150;
+        animation: settingsPop 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+        transform-origin: top left;
+        font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    .dark .settings-dropdown-popover {
+        background: #060b14;
+        border-color: var(--card-border);
+    }
+    html:not(.dark) .settings-dropdown-popover {
+        background: #ffffff;
+        border-color: rgba(11, 75, 137, 0.20);
+        box-shadow: 0 20px 40px rgba(11, 75, 137, 0.14), 0 6px 14px rgba(0, 0, 0, 0.08);
+    }
+    @keyframes settingsPop {
+        from { opacity: 0; transform: scale(0.95) translateY(-6px); }
+        to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .settings-menu-header {
+        padding: 0.4rem 0.65rem 0.5rem 0.65rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        margin-bottom: 0.35rem;
+    }
+    html:not(.dark) .settings-menu-header {
+        border-bottom-color: rgba(0, 0, 0, 0.07);
+    }
+    .settings-menu-title {
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        opacity: 0.6;
+    }
+    .settings-nav-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        padding: 0.75rem 0.75rem;
+        border: none;
+        background: transparent;
+        border-radius: 0.75rem;
+        color: var(--text-body);
+        font-family: inherit;
+        font-size: 0.88rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.15s ease;
+    }
+    .settings-nav-item:hover, .settings-nav-item:active {
+        background: rgba(255, 255, 255, 0.08);
+    }
+    html:not(.dark) .settings-nav-item:hover, html:not(.dark) .settings-nav-item:active {
+        background: rgba(0, 0, 0, 0.05);
+    }
+    .settings-item-left {
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+        flex: 1;
+        min-width: 0;
+    }
+    .settings-item-label {
+        font-size: 0.88rem;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+    }
+    .settings-item-icon {
+        font-size: 1.25rem;
+        flex-shrink: 0;
+    }
+    .settings-item-right {
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+        flex-shrink: 0;
+    }
+    .settings-current-badge {
+        font-size: 0.72rem;
+        font-weight: 600;
+        opacity: 0.75;
+        max-width: 6.5rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        background: rgba(255, 255, 255, 0.07);
+        padding: 0.15rem 0.45rem;
+        border-radius: 0.4rem;
+    }
+    html:not(.dark) .settings-current-badge {
+        background: rgba(0, 0, 0, 0.06);
+    }
+    .settings-submenu-header {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.35rem 0.4rem 0.45rem 0.4rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        margin-bottom: 0.35rem;
+    }
+    html:not(.dark) .settings-submenu-header {
+        border-bottom-color: rgba(0, 0, 0, 0.07);
+    }
+    .settings-back-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.2rem;
+        background: transparent;
+        border: none;
+        color: var(--accent-gold);
+        font-family: inherit;
+        font-size: 0.8rem;
+        font-weight: 700;
+        cursor: pointer;
+        padding: 0.25rem 0.4rem;
+        border-radius: 0.5rem;
+    }
+    .settings-back-btn:hover {
+        background: rgba(255, 255, 255, 0.08);
+    }
+    html:not(.dark) .settings-back-btn:hover {
+        background: rgba(0, 0, 0, 0.05);
+    }
+    .settings-choice-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        padding: 0.65rem 0.75rem;
+        border: none;
+        background: transparent;
+        border-radius: 0.65rem;
+        color: var(--text-body);
+        font-family: inherit;
+        font-size: 0.88rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background 0.15s ease, color 0.15s ease;
+    }
+    .settings-choice-item:hover, .settings-choice-item:active {
+        background: rgba(255, 255, 255, 0.08);
+    }
+    html:not(.dark) .settings-choice-item:hover, html:not(.dark) .settings-choice-item:active {
+        background: rgba(0, 0, 0, 0.05);
+    }
+    .settings-choice-item.active {
+        background: rgba(56, 182, 255, 0.15);
+        color: var(--accent-gold);
+        font-weight: 700;
+    }
+    html:not(.dark) .settings-choice-item.active {
+        background: rgba(11, 75, 137, 0.10);
+        color: var(--accent-gold);
+    }
+    .check-icon {
+        font-size: 1.15rem;
+        opacity: 0;
+        transition: opacity 0.15s ease;
+    }
+    .settings-choice-item.active .check-icon {
+        opacity: 1;
+    }
+
+    /* Segmented Tab Buttons (Glassmorphism Frosted Pill) */
+    .tab-toggle-container {
+        padding: 3px;
+        background: rgba(255, 255, 255, 0.65);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(11, 75, 137, 0.22);
+        border-radius: 0.85rem;
+        width: 200px;
+        min-width: 200px;
+        max-width: 200px;
+        box-shadow: 0 4px 16px rgba(0, 37, 84, 0.05), inset 0 1px 1px rgba(255, 255, 255, 0.85);
+        transition: background-color 0.25s ease, border-color 0.25s ease;
+        position: relative;
+    }
+    .dark .tab-toggle-container {
+        background: rgba(12, 26, 50, 0.60);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.10);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+    .tab-pill-bg {
+        position: absolute;
+        top: 3px;
+        bottom: 3px;
+        left: 3px;
+        width: calc(50% - 3px);
+        border-radius: 0.65rem;
+        background: linear-gradient(135deg, #188bf6, #0b4b89, #002554);
+        box-shadow: 0 2px 8px rgba(11, 75, 137, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        pointer-events: none;
+        z-index: 0;
+    }
+    .dark .tab-pill-bg {
+        background: linear-gradient(135deg, #188bf6, #0f70b5, #002e6e);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.30);
+    }
+
+    .tab-btn {
+        color: #4b5d73;
+        opacity: 0.75;
+        font-weight: 600;
+        font-size: 0.72rem;
+        padding: 0.35rem 0.35rem;
+        border-radius: 0.65rem;
+        cursor: pointer;
+        transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                    opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        background: transparent;
+        border: none;
+        outline: none !important;
+        white-space: nowrap;
+        text-align: center;
+    }
+
+    .tab-btn:focus,
+    .tab-btn:focus-visible {
+        outline: none !important;
+    }
+
+    .dark .tab-btn {
+        color: rgba(210, 225, 245, 0.7);
+        opacity: 0.75;
+    }
+
+    .tab-btn.active {
+        color: #ffffff !important;
+        opacity: 1 !important;
+        font-weight: 800 !important;
+    }
+
+    .dark .tab-btn.active {
+        color: #ffffff !important;
+        opacity: 1 !important;
+        font-weight: 800 !important;
+    }
+
+    .calc-main-title {
+        font-size: 1.15rem;
+        font-weight: 800;
+        letter-spacing: -0.025em;
+        line-height: 1.18;
+        text-align: left;
+        margin: 0;
+    }
+    @media (min-width: 640px) {
+        .calc-main-title {
+            font-size: 1.35rem;
+        }
+    }
+
+    /* Calculator Main Container & Flow */
+    .calculator-layout {
+        width: 100%;
+        max-width: var(--layout-max-width);
+        margin: 0 auto;
+        padding-left: var(--layout-padding-x);
+        padding-right: var(--layout-padding-x);
+        padding-top: 0.85rem;
+        padding-bottom: 3rem;
+        box-sizing: border-box;
+    }
+    @media (min-width: 768px) {
+        .calculator-layout {
+            padding-top: 2rem;
+            padding-bottom: 4rem;
+        }
+    }
+    @media (min-width: 1024px) {
+        .calculator-layout {
+            padding-top: 2.75rem;
+            padding-bottom: 5rem;
+        }
+    }
+
+    /* Unified vertical flow with identical gaps */
+    .calc-flow {
+        display: flex;
+        flex-direction: column;
+        gap: var(--block-gap);
+        width: 100%;
+    }
+
+    .calc-inputs-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: var(--block-gap);
+        width: 100%;
+    }
+    @media (min-width: 768px) {
+        .calc-inputs-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    /* Silky Smooth Down Payment Accordion */
+    .down-payment-wrapper {
+        display: grid;
+        grid-template-rows: 0fr;
+        opacity: 0;
+        transform: translateY(-8px);
+        transition: grid-template-rows 0.38s cubic-bezier(0.16, 1, 0.3, 1), 
+                    opacity 0.32s cubic-bezier(0.16, 1, 0.3, 1),
+                    transform 0.38s cubic-bezier(0.16, 1, 0.3, 1),
+                    margin-top 0.38s cubic-bezier(0.16, 1, 0.3, 1);
+        overflow: hidden;
+        margin-top: calc(-1 * var(--block-gap));
+        width: 100%;
+    }
+
+    .down-payment-wrapper.open {
+        grid-template-rows: 1fr;
+        opacity: 1;
+        transform: translateY(0);
+        margin-top: 0;
+    }
+
+    .down-payment-inner {
+        min-height: 0;
+        overflow: hidden;
+    }
+
+    /* Results Dashboard Grid */
+    .calc-results-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: var(--block-gap);
+        width: 100%;
+    }
+    @media (min-width: 768px) {
+        .calc-results-grid {
+            grid-template-columns: 1fr 1fr 1fr;
+        }
+    }
+
+    .calc-sub-results {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--block-gap);
+    }
+    @media (min-width: 768px) {
+        .calc-sub-results {
+            display: contents;
+        }
+    }
+
+    /* Frosted Glass Panels */
+    .glass-panel {
+        background: var(--card-bg);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        border: 1.5px solid var(--card-border);
+        box-shadow: 0 6px 20px -2px rgba(11, 75, 137, 0.06), 0 2px 6px rgba(0, 0, 0, 0.02), inset 0 1px 1px rgba(255, 255, 255, 0.95);
+        border-radius: 20px;
+        transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .dark .glass-panel {
+        background: var(--card-bg);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid var(--card-border);
+        box-shadow: 0 10px 32px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.12), inset 0 0 20px rgba(15, 112, 181, 0.06);
+        border-radius: 20px;
+    }
+
+    .glass-panel:hover {
+        border-color: rgba(15, 112, 181, 0.40);
+        box-shadow: 0 10px 28px rgba(11, 75, 137, 0.10), inset 0 1px 1px rgba(255, 255, 255, 1);
+    }
+
+    .dark .glass-panel:hover {
+        border-color: rgba(255, 255, 255, 0.20);
+        box-shadow: 0 14px 40px rgba(0, 0, 0, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.20), inset 0 0 24px rgba(15, 112, 181, 0.10);
+    }
+
+    /* Highlight Card (Monthly Payment) */
+    .highlight-card {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.88) 0%, rgba(235, 244, 255, 0.70) 100%);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        border: 1.5px solid rgba(15, 112, 181, 0.35);
+        box-shadow: 0 8px 24px -2px rgba(11, 75, 137, 0.12), inset 0 1px 2px rgba(255, 255, 255, 1);
+        border-radius: 20px;
+        transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .dark .highlight-card {
+        background: linear-gradient(135deg, rgba(24, 64, 120, 0.70) 0%, rgba(12, 36, 72, 0.65) 100%);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        box-shadow: 0 12px 36px rgba(0, 0, 0, 0.70), inset 0 1px 1px rgba(255, 255, 255, 0.22), inset 0 0 24px rgba(15, 112, 181, 0.10);
+        border-radius: 20px;
+    }
+
+    .dark .highlight-card:hover {
+        border-color: rgba(255, 255, 255, 0.25);
+        box-shadow: 0 16px 44px rgba(0, 0, 0, 0.80), inset 0 1px 1px rgba(255, 255, 255, 0.28), inset 0 0 28px rgba(15, 112, 181, 0.14);
+    }
+
+    /* Result Stat Cards Unified Clean Geometry */
+    .result-stat-card {
+        padding: 0.95rem 1.15rem;
+        min-height: 5.6rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        box-sizing: border-box;
+    }
+
+    .result-card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.25rem;
+    }
+
+    .result-watermark-icon {
+        position: absolute;
+        right: 0.65rem;
+        bottom: -0.35rem;
+        font-size: 3.85rem !important;
+        opacity: 0.07;
+        color: #0b4b89;
+        pointer-events: none;
+        user-select: none;
+        transform: rotate(-8deg);
+        transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    .dark .result-watermark-icon {
+        opacity: 0.08;
+        color: #188bf6;
+    }
+
+    .highlight-card:hover .result-watermark-icon,
+    .glass-panel:hover .result-watermark-icon {
+        transform: rotate(0deg) scale(1.08);
+        opacity: 0.16;
+    }
+
+    /* Input Badges */
+    
+    .calc-text-input {
+        background: transparent;
+        color: inherit;
+        font-size: 1.05rem;
+        width: 5.6rem;
+        text-align: right;
+        border: none;
+        outline: none;
+        font-weight: 700;
+        font-family: var(--calc-number-font);
+        letter-spacing: -0.02em;
+        font-variant-numeric: tabular-nums;
+        -webkit-font-feature-settings: "tnum";
+        font-feature-settings: "tnum";
+    }
+    .calc-term-input {
+        background: transparent;
+        color: inherit;
+        font-size: 1.05rem;
+        width: 1.75rem;
+        text-align: right;
+        border: none;
+        outline: none;
+        font-weight: 700;
+        font-family: var(--calc-number-font);
+        letter-spacing: -0.02em;
+        font-variant-numeric: tabular-nums;
+        -webkit-font-feature-settings: "tnum";
+        font-feature-settings: "tnum";
+    }
+    .calc-currency-sign {
+        color: var(--accent-gold);
+        font-size: 1.05rem;
+        font-weight: 700;
+        font-family: var(--calc-number-font);
+    }
+    .dark .calc-currency-sign {
+        color: var(--accent-gold);
+    }
+
+    .input-badge {
+        height: 2.35rem;
+        padding: 0 0.65rem;
+        display: flex;
+        align-items: center;
+        background: linear-gradient(180deg, #ffffff 0%, #f4f7fb 100%);
+        border: 1.5px solid rgba(11, 75, 137, 0.30);
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.03), 0 2px 8px -2px rgba(11, 75, 137, 0.10);
+        border-radius: 12px;
+        cursor: text;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, transform 0.15s ease;
+    }
+
+    .input-badge:hover {
+        border-color: #0f70b5;
+        box-shadow: inset 0 1px 3px rgba(0, 37, 84, 0.03), 0 3px 12px -2px rgba(15, 112, 181, 0.25);
+        background: #ffffff;
+    }
+
+    .input-badge:focus-within {
+        border-color: #0b4b89 !important;
+        background: #ffffff !important;
+        box-shadow: 0 0 0 3.5px rgba(15, 112, 181, 0.20), 0 4px 16px -2px rgba(11, 75, 137, 0.25), inset 0 1px 2px rgba(0, 0, 0, 0.03) !important;
+    }
+
+    .dark .input-badge {
+        background: rgba(10, 22, 44, 0.60);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.10);
+        box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.5);
+        border-radius: 12px;
+        cursor: text;
+    }
+
+    .dark .input-badge:hover {
+        border-color: rgba(255, 255, 255, 0.22);
+        box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.5);
+        background: rgba(14, 28, 56, 0.70);
+    }
+
+    .dark .input-badge:focus-within {
+        border-color: #188bf6 !important;
+        background: rgba(14, 28, 56, 0.85) !important;
+        box-shadow: 0 0 0 3px rgba(24, 139, 246, 0.22), inset 0 2px 5px rgba(0, 0, 0, 0.5) !important;
+    }
+
+    .input-edit-icon {
+        font-size: 0.85rem !important;
+        color: #0b4b89;
+        opacity: 0.65;
+        transition: opacity 0.2s ease, color 0.2s ease, transform 0.2s ease;
+        pointer-events: none;
+        user-select: none;
+    }
+
+    .dark .input-edit-icon {
+        color: #38b6ff;
+        opacity: 0.75;
+    }
+
+    .input-badge:hover .input-edit-icon {
+        opacity: 1;
+        transform: scale(1.1);
+        color: #0f70b5;
+    }
+
+    .dark .input-badge:hover .input-edit-icon {
+        color: #7dc9ff;
+    }
+
+    .input-badge:focus-within .input-edit-icon {
+        opacity: 1;
+        color: #0b4b89;
+    }
+
+    .dark .input-badge:focus-within .input-edit-icon {
+        color: #38b6ff;
+    }
+
+    /* Preset Chips & Symmetrical Width Adaptive Rows */
+    .presets-row-base {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.375rem;
+        width: 100%;
+    }
+    .presets-row-base .preset-chip {
+        flex: 1 1 calc(25% - 0.375rem);
+        min-width: 4rem;
+        text-align: center;
+        justify-content: center;
+        display: inline-flex;
+        align-items: center;
+        white-space: nowrap;
+    }
+
+    .presets-term-row {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.375rem;
+        width: 100%;
+    }
+    .presets-term-row .preset-chip {
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+        display: inline-flex;
+        align-items: center;
+        white-space: nowrap;
+    }
+
+    .presets-extra-accordion {
+        display: grid;
+        grid-template-rows: 0fr;
+        opacity: 0;
+        transform: translateY(-4px);
+        transition: grid-template-rows 0.32s cubic-bezier(0.16, 1, 0.3, 1), 
+                    opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+                    transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+        overflow: hidden;
+    }
+
+    .presets-extra-accordion.open {
+        grid-template-rows: 1fr;
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .presets-extra-inner {
+        min-height: 0;
+        overflow: hidden;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.375rem;
+    }
+
+    .preset-chip {
+        background: linear-gradient(180deg, #ffffff 0%, #f1f5fa 100%);
+        border: 1.2px solid rgba(11, 75, 137, 0.20);
+        color: #14233c;
+        box-shadow: 0 2px 5px rgba(0, 37, 84, 0.05), inset 0 1px 0 rgba(255, 255, 255, 1);
+        border-radius: 9px;
+        font-weight: 600;
+        font-size: 0.72rem;
+        letter-spacing: -0.01em;
+        padding: 0.36rem 0.25rem;
+        box-sizing: border-box;
+        transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, color 0.18s ease;
+        cursor: pointer;
+        outline: none !important;
+    }
+
+    .preset-chip:focus,
+    .preset-chip:focus-visible {
+        outline: none !important;
+    }
+
+    .preset-chip:hover {
+        background: linear-gradient(135deg, #ffffff 0%, #e8f2fc 100%);
+        border-color: #0f70b5;
+        color: #002554;
+        box-shadow: 0 3px 10px rgba(15, 112, 181, 0.22), inset 0 1px 0 rgba(255, 255, 255, 1);
+        transform: translateY(-1.5px);
+    }
+
+    .preset-chip:active {
+        transform: translateY(0);
+        background: #d8e9f9;
+        box-shadow: 0 1px 2px rgba(0, 37, 84, 0.1);
+    }
+
+    .dark .preset-chip {
+        background: rgba(20, 42, 80, 0.45);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.10);
+        color: rgba(240, 246, 255, 0.95);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        border-radius: 10px;
+        font-weight: 600;
+    }
+
+    .dark .preset-chip:hover {
+        background: rgba(28, 60, 112, 0.65);
+        border-color: rgba(255, 255, 255, 0.22);
+        color: #ffffff;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.16);
+        transform: translateY(-1.5px);
+    }
+
+    .dark .preset-chip:active {
+        transform: translateY(0);
+        background: rgba(20, 46, 90, 0.70);
+    }
+
+    /* Text & Theme Labels */
+    .card-label {
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        line-height: 1.25;
+        color: #4b5e76;
+        transition: color 0.25s ease;
+    }
+    .dark .card-label {
+        color: rgba(215, 230, 250, 0.8);
+    }
+
+    .card-label-gold {
+        font-size: clamp(0.68rem, 2.3vw, 0.76rem);
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        line-height: 1.2;
+        color: #4b5e76;
+        transition: color 0.25s ease;
+        white-space: normal;
+        word-break: normal;
+    }
+    .highlight-card .card-label-gold {
+        color: #0b4b89;
+    }
+    .dark .card-label-gold,
+    .dark .highlight-card .card-label-gold {
+        color: #38b6ff !important;
+    }
+
+    .border-divider-top {
+        border-top: 1px solid rgba(11, 75, 137, 0.08);
+        transition: border-color 0.25s ease;
+    }
+    .dark .border-divider-top {
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .sub-info {
+        font-size: 11px;
+        color: #627792;
+        font-weight: 500;
+        transition: color 0.25s ease;
+    }
+    .dark .sub-info {
+        color: rgba(185, 210, 240, 0.55);
+    }
+
+    /* Core Layout Utility Classes */
+    .w-full { width: 100%; }
+    .max-w-4xl { max-width: 57.5rem; }
+    .mx-auto { margin-left: auto; margin-right: auto; }
+
+    .flex { display: flex; }
+    .flex-col { flex-direction: column; }
+    .items-center { align-items: center; }
+    .justify-between { justify-content: space-between; }
+    .justify-center { justify-content: center; }
+    .gap-1-5 { gap: 0.375rem; }
+    .gap-2 { gap: 0.5rem; }
+    .gap-2-5 { gap: 0.625rem; }
+    .space-y-3 > * + * { margin-top: 0.75rem; }
+
+    .relative { position: relative; }
+    .absolute { position: absolute; }
+    .overflow-hidden { overflow: hidden; }
+    .shrink-0 { flex-shrink: 0; }
+    .flex-1 { flex: 1 1 0%; }
+    .min-w-0 { min-width: 0; }
+    .text-center { text-align: center; }
+    .select-none { user-select: none; }
+    .pb-6 { padding-bottom: 1.5rem; }
+
+    /* Theme Switcher Button */
+    .theme-toggle-btn {
+        width: 2.25rem;
+        height: 2.25rem;
+        border-radius: 0.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        background: rgba(255, 255, 255, 0.75);
+        border: 1.5px solid rgba(11, 75, 137, 0.25);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+        transition: transform 0.15s ease, background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+        outline: none !important;
+        user-select: none;
+    }
+
+    .theme-toggle-btn:hover {
+        background: rgba(255, 255, 255, 0.95);
+        border-color: #0f70b5;
+        transform: scale(1.05);
+    }
+
+    .theme-toggle-btn:active {
+        transform: scale(0.92);
+    }
+
+    .dark .theme-toggle-btn {
+        background: rgba(14, 28, 56, 0.60);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.10);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+    }
+
+    .dark .theme-toggle-btn:hover {
+        background: rgba(20, 40, 80, 0.75);
+        border-color: rgba(255, 255, 255, 0.22);
+        transform: scale(1.05);
+    }
+
+    .header-nav {
+        position: sticky;
+        top: 0;
+        width: 100%;
+        z-index: 50;
+        background: rgba(240, 244, 248, 0.85);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.90);
+        padding-top: max(0.65rem, env(safe-area-inset-top));
+        padding-bottom: 0.65rem;
+        padding-left: 0;
+        padding-right: 0;
+        transition: transform 0.3s ease, background-color 0.25s ease, border-color 0.25s ease;
+        box-shadow: 0 1px 4px rgba(0, 37, 84, 0.04);
+    }
+    @media (min-width: 1024px) {
+        .header-nav {
+            padding-top: max(0.85rem, env(safe-area-inset-top));
+            padding-bottom: 0.85rem;
+        }
+    }
+    .header-inner {
+        width: 100%;
+        max-width: var(--layout-max-width);
+        padding-left: var(--layout-padding-x);
+        padding-right: var(--layout-padding-x);
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-sizing: border-box;
+    }
+    .logo-box {
+        width: 2.1rem;
+        height: 2.1rem;
+        border-radius: 0.6rem;
+        background: linear-gradient(135deg, #188bf6, #0b4b89, #002554);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 8px rgba(11, 75, 137, 0.35);
+        flex-shrink: 0;
+        border: none !important;
+        outline: none !important;
+        -webkit-appearance: none;
+        appearance: none;
+        padding: 0;
+        cursor: pointer;
+    }
+    .logo-box:focus,
+    .logo-box:focus-visible,
+    .logo-box:active {
+        border: none !important;
+        outline: none !important;
+    }
+    .dark .logo-box {
+        background: linear-gradient(135deg, #188bf6, #0b4b89, #002554);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.50);
+        border: none !important;
+        outline: none !important;
+    }
+    @media (min-width: 1024px) {
+        .logo-box {
+            width: 2.45rem;
+            height: 2.45rem;
+            border-radius: 0.7rem;
+        }
+    }
+    .logo-main-text {
+        font-weight: 800;
+        font-size: 0.95rem;
+        letter-spacing: -0.02em;
+        line-height: 1.15;
+        color: #002554;
+    }
+    .dark .logo-main-text {
+        color: #f0f5fa;
+    }
+    @media (min-width: 1024px) {
+        .logo-main-text {
+            font-size: 1.08rem;
+        }
+    }
+    .logo-sub-text {
+        font-size: 0.7rem;
+        opacity: 0.85;
+        font-weight: 600;
+        color: #0f70b5;
+    }
+    .dark .logo-sub-text {
+        color: #7dc9ff;
+    }
+    @media (min-width: 1024px) {
+        .logo-sub-text {
+            font-size: 0.76rem;
+        }
+    }
+    .dark .header-nav {
+        background: rgba(2, 4, 8, 0.80);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.50);
+    }
+
+    /* Numeric Value Typography */
+    .stat-val-highlight,
+    .stat-val-secondary {
+        font-family: var(--calc-number-font);
+        font-variant-numeric: tabular-nums;
+        -webkit-font-feature-settings: "tnum";
+        font-feature-settings: "tnum";
+        display: inline-block;
+        transform: translateZ(0);
+        will-change: contents;
+    }
+    .stat-val-highlight {
+        font-size: clamp(1.35rem, 4vw, 1.6rem);
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        line-height: 1.1;
+    }
+    .stat-val-secondary {
+        font-size: clamp(1.25rem, 3.8vw, 1.45rem);
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        line-height: 1.1;
+    }
+
+    /* Desktop Scaling Enhancements */
+    @media (min-width: 1024px) {
+        .calc-main-title {
+            font-size: 1.55rem;
+        }
+        .tab-toggle-container {
+            width: 225px;
+            min-width: 225px;
+            max-width: 225px;
+            padding: 4px;
+            border-radius: 0.95rem;
+        }
+        .tab-btn {
+            font-size: 0.8rem;
+            padding: 0.45rem 0.45rem;
+        }
+        .glass-panel, .highlight-card {
+            padding: 1.4rem 1.55rem !important;
+            border-radius: 22px;
+        }
+        .card-label {
+            font-size: 0.82rem;
+            letter-spacing: 0.05em;
+        }
+        .card-label-gold {
+            font-size: 0.82rem;
+        }
+        .input-badge {
+            height: 2.75rem;
+            padding: 0 0.85rem;
+            border-radius: 14px;
+        }
+        .calc-text-input {
+            font-size: 1.25rem !important;
+            width: 6.8rem !important;
+        }
+        .calc-term-input {
+            font-size: 1.25rem !important;
+            width: 2.2rem !important;
+        }
+        .calc-currency-sign {
+            font-size: 1.25rem !important;
+        }
+        .input-edit-icon {
+            font-size: 1rem !important;
+        }
+        input[type="range"] {
+            height: 6px;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            height: 22px;
+            width: 22px;
+        }
+        input[type="range"]::-moz-range-thumb {
+            height: 22px;
+            width: 22px;
+        }
+        .sub-info {
+            font-size: 13px;
+        }
+        .preset-chip {
+            font-size: 12.5px !important;
+            padding: 0.35rem 0.8rem !important;
+            border-radius: 11px;
+        }
+        .result-stat-card {
+            padding: 1.25rem 1.45rem;
+            min-height: 6.8rem;
+        }
+        .stat-val-highlight {
+            font-size: 2.1rem;
+        }
+        .stat-val-secondary {
+            font-size: 1.75rem;
+        }
+        .result-watermark-icon {
+            font-size: 4.8rem !important;
+            right: 0.85rem;
+            bottom: -0.45rem;
+        }
+        .theme-toggle-btn {
+            width: 2.6rem;
+            height: 2.6rem;
+            border-radius: 0.85rem;
+        }
+    }
+
+    /* =========================================================
+       ACTION BUTTONS & PAYMENT SCHEDULE MODAL
+       ========================================================= */
+    /* =========================================================
+       ACTION BUTTONS (Cross-Browser Safari / iOS Fix & 120 FPS)
+       ========================================================= */
+    .calc-actions-flow {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+        width: 100%;
+        box-sizing: border-box;
+        align-items: stretch;
+    }
+
+    .calc-actions-flow .btn-action-primary {
+        grid-column: 1 / -1; /* spans full width on mobile */
+    }
+
+    @media (min-width: 768px) {
+        .calc-actions-flow {
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: var(--block-gap);
+        }
+        .calc-actions-flow .btn-action-primary {
+            grid-column: auto; /* 1 column on desktop */
+        }
+    }
+
+    .btn-action {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.55rem;
+        width: 100%;
+        height: 3.35rem;
+        min-height: 3.35rem;
+        max-height: 3.35rem;
+        padding: 0 0.85rem;
+        border-radius: 1.15rem;
+        font-family: inherit;
+        font-size: 0.92rem;
+        font-weight: 600;
+        line-height: 1;
+        cursor: pointer;
+        outline: none;
+        box-sizing: border-box;
+        vertical-align: middle;
+        text-align: center;
+        user-select: none;
+        -webkit-user-select: none;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+        transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1),
+                    background-color 0.2s ease,
+                    border-color 0.2s ease,
+                    box-shadow 0.2s ease,
+                    color 0.2s ease;
+        transform: translateZ(0);
+        will-change: transform;
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+    }
+    .btn-action:active {
+        transform: scale(0.97) translateZ(0);
+    }
+    .btn-action .material-symbols-outlined {
+        font-size: 1.25rem;
+        flex-shrink: 0;
+    }
+
+    .btn-action-primary {
+        border: none;
+        background: linear-gradient(135deg, #002554 0%, #0b4b89 100%);
+        color: #ffffff;
+        box-shadow: 0 4px 14px rgba(0, 37, 84, 0.20);
+    }
+    .btn-action-primary:hover {
+        transform: translateY(-1.5px) translateZ(0);
+        box-shadow: 0 8px 22px rgba(0, 37, 84, 0.30);
+        background: linear-gradient(135deg, #001e44 0%, #0d5aa5 100%);
+    }
+    .btn-action-primary:active {
+        transform: scale(0.97) translateZ(0);
+    }
+    .btn-action-primary .material-symbols-outlined {
+        color: #ffffff;
+    }
+
+    .dark .btn-action-primary {
+        background: linear-gradient(135deg, #083c74 0%, #0b4b89 100%);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+    .dark .btn-action-primary:hover {
+        background: linear-gradient(135deg, #0b4b89 0%, #188bf6 100%);
+        box-shadow: 0 6px 24px rgba(24, 139, 246, 0.3);
+    }
+
+    .btn-action-secondary {
+        background: rgba(240, 244, 248, 0.85);
+        color: #002554;
+        border: 1px solid rgba(0, 37, 84, 0.12);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+    }
+    .btn-action-secondary:hover {
+        background: #ffffff;
+        color: #188bf6;
+        border-color: rgba(24, 139, 246, 0.35);
+        transform: translateY(-1.5px) translateZ(0);
+        box-shadow: 0 6px 16px rgba(0, 37, 84, 0.08);
+    }
+    .btn-action-secondary:active {
+        transform: scale(0.97) translateZ(0);
+    }
+    .btn-action-secondary .material-symbols-outlined {
+        color: #0b4b89;
+        transition: color 0.2s ease;
+    }
+    .btn-action-secondary:hover .material-symbols-outlined {
+        color: #188bf6;
+    }
+
+    .dark .btn-action-secondary {
+        background: rgba(14, 28, 52, 0.55);
+        color: #e2e8f0;
+        border: 1px solid rgba(255, 255, 255, 0.10);
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+    }
+    .dark .btn-action-secondary:hover {
+        background: rgba(24, 46, 82, 0.75);
+        color: #ffffff;
+        border-color: rgba(56, 182, 255, 0.4);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+    }
+    .dark .btn-action-secondary .material-symbols-outlined {
+        color: #38b6ff;
+    }
+
+    /* Modal Overlay & Dialog */
+    .schedule-modal-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.25s ease, visibility 0.25s ease;
+    }
+    .schedule-modal-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .schedule-modal-backdrop {
+        position: absolute;
+        inset: 0;
+        background: rgba(2, 6, 16, 0.65);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+    }
+
+    .schedule-modal-dialog {
+        position: relative;
+        z-index: 1001;
+        width: 100%;
+        max-width: 580px;
+        max-height: 88vh;
+        display: flex;
+        flex-direction: column;
+        background: #ffffff;
+        border-radius: 1.5rem;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+        border: 1px solid rgba(0, 37, 84, 0.12);
+        overflow: hidden;
+        transform: scale(0.95) translateY(12px) translateZ(0);
+        transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.22s ease;
+        will-change: transform;
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+    }
+    .schedule-modal-overlay.active .schedule-modal-dialog {
+        transform: scale(1) translateY(0) translateZ(0);
+    }
+
+    .dark .schedule-modal-dialog {
+        background: #070d18;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.85);
+    }
+
+    .schedule-modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid rgba(0, 37, 84, 0.08);
+    }
+    .dark .schedule-modal-header {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .schedule-modal-title-wrap {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    .schedule-modal-icon-badge {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 0.75rem;
+        background: rgba(24, 139, 246, 0.12);
+        color: #188bf6;
+    }
+    .dark .schedule-modal-icon-badge {
+        background: rgba(56, 182, 255, 0.15);
+        color: #38b6ff;
+    }
+    .schedule-modal-title {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #002554;
+        margin: 0;
+        line-height: 1.25;
+    }
+    .dark .schedule-modal-title {
+        color: #ffffff;
+    }
+    .schedule-modal-subtitle {
+        font-size: 0.78rem;
+        color: #64748b;
+        margin: 0;
+        margin-top: 2px;
+    }
+    .dark .schedule-modal-subtitle {
+        color: #94a3b8;
+    }
+
+    .schedule-modal-close-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.25rem;
+        height: 2.25rem;
+        border-radius: 0.65rem;
+        border: none;
+        outline: none;
+        background: #f1f5f9;
+        color: #64748b;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    .schedule-modal-close-btn:hover {
+        background: #e2e8f0;
+        color: #0f172a;
+    }
+    .dark .schedule-modal-close-btn {
+        background: rgba(255, 255, 255, 0.08);
+        color: #94a3b8;
+    }
+    .dark .schedule-modal-close-btn:hover {
+        background: rgba(255, 255, 255, 0.16);
+        color: #ffffff;
+    }
+
+    .schedule-modal-body {
+        padding: 1.25rem 1.5rem;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+        flex: 1;
+    }
+
+    /* Modal Summary Bar */
+    .schedule-summary-bar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem 1.25rem;
+        padding: 0.85rem 1rem;
+        border-radius: 0.85rem;
+        background: #f8fafc;
+        border: 1px solid rgba(0, 37, 84, 0.06);
+        margin-bottom: 1.15rem;
+    }
+    .dark .schedule-summary-bar {
+        background: rgba(14, 28, 52, 0.45);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .schedule-summary-item {
+        display: flex;
+        align-items: center;
+        gap: 0.45rem;
+        font-size: 0.82rem;
+    }
+    .schedule-summary-lbl {
+        color: #64748b;
+    }
+    .dark .schedule-summary-lbl {
+        color: #94a3b8;
+    }
+    .schedule-summary-val {
+        font-weight: 600;
+        color: #002554;
+    }
+    .dark .schedule-summary-val {
+        color: #f1f5f9;
+    }
+    .schedule-summary-val-gold {
+        color: #d97706 !important;
+    }
+    .dark .schedule-summary-val-gold {
+        color: #fbbf24 !important;
+    }
+
+    /* Schedule Table */
+    .schedule-table-container {
+        width: 100%;
+        overflow-x: auto;
+    }
+    .schedule-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.88rem;
+    }
+    .schedule-table thead tr {
+        border-bottom: 1px solid rgba(0, 37, 84, 0.1);
+    }
+    .dark .schedule-table thead tr {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .schedule-table th {
+        padding: 0.75rem 0.6rem;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: #64748b;
+        text-align: left;
+    }
+    .dark .schedule-table th {
+        color: #94a3b8;
+    }
+    .schedule-table td {
+        padding: 0.85rem 0.6rem;
+        border-bottom: 1px solid rgba(0, 37, 84, 0.05);
+        color: #334155;
+    }
+    .dark .schedule-table td {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        color: #cbd5e1;
+    }
+    .schedule-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+    .schedule-table tbody tr:hover {
+        background: rgba(24, 139, 246, 0.04);
+    }
+    .dark .schedule-table tbody tr:hover {
+        background: rgba(56, 182, 255, 0.04);
+    }
+    .schedule-col-num {
+        font-weight: 700;
+        color: #002554;
+    }
+    .dark .schedule-col-num {
+        color: #38b6ff;
+    }
+    .schedule-col-pay {
+        font-weight: 700;
+        color: #002554;
+        text-align: right;
+    }
+    .dark .schedule-col-pay {
+        color: #ffffff;
+    }
+    .schedule-col-debt {
+        font-weight: 500;
+        color: #64748b;
+        text-align: right;
+    }
+    .dark .schedule-col-debt {
+        color: #94a3b8;
+    }
+
+    /* Modal Footer */
+    .schedule-modal-footer {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        padding: 1rem 1.5rem;
+        background: #f8fafc;
+        border-top: 1px solid rgba(0, 37, 84, 0.08);
+        gap: 1rem;
+    }
+    .dark .schedule-modal-footer {
+        background: rgba(14, 28, 52, 0.5);
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .schedule-modal-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+    }
+    .btn-schedule-action {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        padding: 0.55rem 0.95rem;
+        border-radius: 0.75rem;
+        font-family: inherit;
+        font-size: 0.84rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border: 1px solid rgba(0, 37, 84, 0.12);
+        background: #ffffff;
+        color: #002554;
+        outline: none;
+    }
+    .btn-schedule-action:hover {
+        background: #f1f5f9;
+        border-color: rgba(24, 139, 246, 0.3);
+        color: #188bf6;
+    }
+    .dark .btn-schedule-action {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        color: #e2e8f0;
+    }
+    .dark .btn-schedule-action:hover {
+        background: rgba(255, 255, 255, 0.12);
+        color: #ffffff;
+        border-color: rgba(56, 182, 255, 0.35);
+    }
+    .btn-schedule-action-primary {
+        background: linear-gradient(135deg, #002554 0%, #0b4b89 100%);
+        color: #ffffff;
+        border: none;
+    }
+    .btn-schedule-action-primary:hover {
+        background: linear-gradient(135deg, #001e44 0%, #0d5aa5 100%);
+        color: #ffffff;
+    }
+    .dark .btn-schedule-action-primary {
+        background: linear-gradient(135deg, #083c74 0%, #0b4b89 100%);
+        color: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+    .dark .btn-schedule-action-primary:hover {
+        background: linear-gradient(135deg, #0b4b89 0%, #188bf6 100%);
+        color: #ffffff;
+    }
+    .btn-schedule-action .material-symbols-outlined {
+        font-size: 1.1rem;
+    }
+
+    /* Toast Notification */
+    .toast-notification {
+        position: fixed;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%) translateY(30px);
+        background: #002554;
+        color: #ffffff;
+        padding: 0.75rem 1.35rem;
+        border-radius: 9999px;
+        box-shadow: 0 12px 30px rgba(0, 37, 84, 0.35);
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        font-size: 0.9rem;
+        font-weight: 600;
+        z-index: 2000;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+        pointer-events: none;
+    }
+    .toast-notification.active {
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(-50%) translateY(0);
+    }
+    .toast-notification .toast-icon {
+        color: #10b981;
+        font-size: 1.25rem;
+    }
+    .dark .toast-notification {
+        background: #0b4b89;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 14px 35px rgba(0, 0, 0, 0.6);
+    }
+
+    /* Clean Print / PDF Styles: Only values and schedule, no app UI */
+    .print-only {
+        display: none !important;
+    }
+
+    @media print {
+        @page {
+            size: portrait;
+            margin: 8mm 12mm;
+        }
+        html, body {
+            background: #ffffff !important;
+            color: #0f172a !important;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            width: 100% !important;
+            min-height: 0 !important;
+            height: auto !important;
+            max-height: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            overflow: visible !important;
+        }
+        /* Completely hide entire web calculator UI and any non-print siblings */
+        body > *:not(#print-sheet),
+        header,
+        main,
+        footer,
+        .bg-ambient,
+        .calculator-layout,
+        .calc-flow,
+        .calc-actions-flow,
+        .schedule-modal-overlay,
+        .toast-notification {
+            display: none !important;
+        }
+        /* Display ONLY the clean printable summary and schedule strictly on 1 single page */
+        #print-sheet.print-only {
+            display: block !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            page-break-after: avoid !important;
+            break-after: avoid !important;
+        }
+        #print-sheet * {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+        }
+        .print-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            border-bottom: 2px solid #002554;
+            padding-bottom: 8px;
+            margin-bottom: 10px;
+        }
+        .print-logo {
+            font-size: 18pt;
+            font-weight: 800;
+            color: #002554 !important;
+            margin: 0;
+            line-height: 1;
+        }
+        .print-subtitle {
+            font-size: 9pt;
+            color: #64748b;
+            margin: 2px 0 0 0;
+        }
+        .print-meta p {
+            margin: 1px 0;
+            font-size: 8.5pt;
+            color: #334155;
+            text-align: right;
+        }
+        .print-section-title {
+            font-size: 10.5pt;
+            font-weight: 700;
+            color: #002554 !important;
+            margin: 0 0 6px 0;
+        }
+        .print-summary-card {
+            background: #f8fafc !important;
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 6px;
+            padding: 8px 12px;
+            margin-bottom: 10px;
+            page-break-inside: avoid;
+        }
+        .print-summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px 12px;
+        }
+        .print-summary-cell {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+        }
+        .print-lbl {
+            font-size: 7.5pt;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            font-weight: 600;
+        }
+        .print-val {
+            font-size: 10pt;
+            font-weight: 700;
+            color: #0f172a;
+        }
+        .print-val-highlight {
+            color: #0b4b89 !important;
+            font-size: 10.5pt;
+        }
+        .print-val-bold {
+            color: #002554 !important;
+        }
+        .print-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 8.5pt;
+            margin-top: 4px;
+        }
+        .print-table th {
+            background: #002554 !important;
+            color: #ffffff !important;
+            font-weight: 700;
+            font-size: 7.5pt;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            padding: 5px 8px;
+            border: 1px solid #002554;
+        }
+        .print-table td {
+            padding: 3.5px 8px;
+            border: 1px solid #cbd5e1;
+            color: #1e293b;
+            font-size: 8pt;
+            line-height: 1.25;
+        }
+        .print-table tr:nth-child(even) td {
+            background: #f8fafc !important;
+        }
+        .print-table tr {
+            page-break-inside: avoid;
+        }
+        .print-footer {
+            margin-top: 8px;
+            font-size: 7.5pt;
+            color: #94a3b8;
+            text-align: center;
+            page-break-inside: avoid;
+            page-break-before: avoid !important;
+            break-before: avoid !important;
+            page-break-after: avoid !important;
+            break-after: avoid !important;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .schedule-modal-footer {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 0.75rem;
+        }
+        .schedule-modal-actions {
+            width: 100%;
+            display: flex;
+            gap: 0.6rem;
+        }
+        .btn-schedule-action {
+            flex: 1;
+            justify-content: center;
+        }
+        .schedule-summary-bar {
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+    }
+</style>
+</head>
+<body>
+
+<!-- Ambient background glow layer -->
+<div class="bg-ambient"></div>
+
+<!-- Top Navigation Bar -->
+<header id="main-header" class="header-nav">
+    <div class="header-inner">
+        <div class="relative flex items-center gap-2-5">
+            <!-- Calculator Icon with Settings Dropdown -->
+            <div class="relative">
+                <button type="button" id="settings-menu-trigger" onclick="toggleSettingsMenu(event)" class="logo-box cursor-pointer" aria-label="Настройки">
+                    <span class="material-symbols-outlined logo-calc-icon" style="color: #ffffff; font-size: 1.25rem; font-weight: 900;">calculate</span>
+                </button>
+
+                <!-- Settings Dropdown Popover -->
+                <div id="settings-dropdown-menu" class="settings-dropdown-popover" style="display: none;">
+                    <!-- View 1: Main Menu -->
+                    <div id="settings-view-main">
+                        <div class="settings-menu-header">
+                            <span class="settings-menu-title">Настройки калькулятора</span>
+                        </div>
+                        <button type="button" onclick="showSettingsSubmenu('theme')" class="settings-nav-item">
+                            <div class="settings-item-left">
+                                <span class="material-symbols-outlined settings-item-icon" style="color: #38b6ff;">palette</span>
+                                <span class="settings-item-label">Стиль калькулятора</span>
+                            </div>
+                            <div class="settings-item-right">
+                                <span class="material-symbols-outlined text-base opacity-40">chevron_right</span>
+                            </div>
+                        </button>
+                        <button type="button" onclick="showSettingsSubmenu('font')" class="settings-nav-item">
+                            <div class="settings-item-left">
+                                <span class="material-symbols-outlined settings-item-icon" style="color: #1072b4;">font_download</span>
+                                <span class="settings-item-label">Шрифт калькулятора</span>
+                            </div>
+                            <div class="settings-item-right">
+                                <span class="material-symbols-outlined text-base opacity-40">chevron_right</span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <!-- View 2: Submenu Styles -->
+                    <div id="settings-view-theme" style="display: none;">
+                        <div class="settings-submenu-header">
+                            <button type="button" onclick="backToMainMenu()" class="settings-back-btn">
+                                <span class="material-symbols-outlined text-sm">arrow_back</span>
+                                <span>Назад</span>
+                            </button>
+                            <span class="settings-menu-title">Стиль калькулятора</span>
+                        </div>
+                        <div class="space-y-1">
+                            <button type="button" onclick="applyDesignStyle('classic-blue')" class="settings-choice-item" id="item-style-classic-blue">
+                                <span>Классика FinIsland</span>
+                                <span class="material-symbols-outlined check-icon" id="check-style-classic-blue">check</span>
+                            </button>
+                            <button type="button" onclick="applyDesignStyle('neo-fintech')" class="settings-choice-item" id="item-style-neo-fintech">
+                                <span>Нео-Финтех</span>
+                                <span class="material-symbols-outlined check-icon" id="check-style-neo-fintech">check</span>
+                            </button>
+                            <button type="button" onclick="applyDesignStyle('royal-navy')" class="settings-choice-item" id="item-style-royal-navy">
+                                <span>Премиум Индиго</span>
+                                <span class="material-symbols-outlined check-icon" id="check-style-royal-navy">check</span>
+                            </button>
+                            <button type="button" onclick="applyDesignStyle('nordic-glass')" class="settings-choice-item" id="item-style-nordic-glass">
+                                <span>Нордик Гласс</span>
+                                <span class="material-symbols-outlined check-icon" id="check-style-nordic-glass">check</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- View 3: Submenu Fonts -->
+                    <div id="settings-view-font" style="display: none;">
+                        <div class="settings-submenu-header">
+                            <button type="button" onclick="backToMainMenu()" class="settings-back-btn">
+                                <span class="material-symbols-outlined text-sm">arrow_back</span>
+                                <span>Назад</span>
+                            </button>
+                            <span class="settings-menu-title">Шрифт калькулятора</span>
+                        </div>
+                        <div class="space-y-1">
+                            <button type="button" onclick="applyFont('plus-jakarta')" class="settings-choice-item" id="item-font-plus-jakarta">
+                                <span style="font-family: 'Plus Jakarta Sans', sans-serif;">Plus Jakarta Sans</span>
+                                <span class="material-symbols-outlined check-icon" id="check-font-plus-jakarta">check</span>
+                            </button>
+                            <button type="button" onclick="applyFont('manrope')" class="settings-choice-item" id="item-font-manrope">
+                                <span style="font-family: 'Manrope', sans-serif;">Manrope</span>
+                                <span class="material-symbols-outlined check-icon" id="check-font-manrope">check</span>
+                            </button>
+                            <button type="button" onclick="applyFont('inter')" class="settings-choice-item" id="item-font-inter">
+                                <span style="font-family: 'Inter', sans-serif;">Inter</span>
+                                <span class="material-symbols-outlined check-icon" id="check-font-inter">check</span>
+                            </button>
+                            <button type="button" onclick="applyFont('montserrat')" class="settings-choice-item" id="item-font-montserrat">
+                                <span style="font-family: 'Montserrat', sans-serif;">Montserrat</span>
+                                <span class="material-symbols-outlined check-icon" id="check-font-montserrat">check</span>
+                            </button>
+                            <button type="button" onclick="applyFont('golos')" class="settings-choice-item" id="item-font-golos">
+                                <span style="font-family: 'Golos Text', sans-serif;">Golos Text</span>
+                                <span class="material-symbols-outlined check-icon" id="check-font-golos">check</span>
+                            </button>
+                            <button type="button" onclick="applyFont('unbounded')" class="settings-choice-item" id="item-font-unbounded">
+                                <span style="font-family: 'Unbounded', sans-serif;">Unbounded</span>
+                                <span class="material-symbols-outlined check-icon" id="check-font-unbounded">check</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col">
+                <span class="logo-main-text">FinIsland</span>
+                <span class="logo-sub-text">Калькулятор рассрочки</span>
+            </div>
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+            <!-- Theme Switcher Button -->
+            <button id="theme-toggle-btn" onclick="cycleTheme()" class="theme-toggle-btn" title="Сменить тему" aria-label="Сменить тему">
+                <span id="theme-toggle-icon" class="material-symbols-outlined" style="font-size: 1.25rem; color: var(--accent-gold);">light_mode</span>
+            </button>
+        </div>
+    </div>
+</header>
+
+<main class="w-full">
+<section class="calculator-layout" id="calculators">
+    <!-- Unified vertical flow: identical gap between ALL main blocks -->
+    <div class="calc-flow">
+
+        <!-- Brand Hero Logo Section -->
+        <div class="hero-brand-section">
+            <svg class="hero-brand-logo finisland-logo" xmlns="http://www.w3.org/2000/svg" viewBox="110 85 810 705" aria-label="FINISLAND — рассрочка по нормам ислама">
+                <g class="logo-navy">
+                    <path d="M 764 744 L 764 746 L 762 749 L 762 752 L 756 764 L 756 767 L 754 769 L 754 773 L 759 772 L 760 768 L 762 766 L 774 767 L 776 773 L 781 771 L 774 755 L 774 752 L 771 745 L 769 743 Z M 769 753 L 771 758 L 770 761 L 763 760 L 765 757 L 765 754 Z"/>
+                    <path d="M 716 744 L 717 773 L 721 772 L 722 755 L 726 761 L 728 767 L 730 769 L 733 767 L 739 755 L 740 771 L 741 773 L 745 772 L 744 743 L 739 744 L 733 757 L 730 760 L 729 757 L 726 753 L 723 745 L 721 743 Z"/>
+                    <path d="M 691 744 L 687 753 L 687 756 L 684 761 L 684 764 L 682 766 L 681 769 L 681 773 L 685 773 L 688 766 L 701 767 L 701 769 L 703 773 L 708 772 L 702 758 L 698 745 L 696 743 Z M 694 750 L 697 756 L 697 761 L 690 759 Z"/>
+                    <path d="M 655 743 L 653 745 L 653 763 L 651 767 L 647 769 L 647 773 L 649 774 L 654 772 L 656 769 L 656 766 L 657 756 L 658 750 L 660 748 L 667 749 L 668 759 L 668 767 L 667 768 L 667 771 L 668 773 L 672 773 L 673 771 L 673 769 L 672 768 L 673 764 L 673 748 L 671 743 Z"/>
+                    <path d="M 623 743 L 618 746 L 615 750 L 614 753 L 614 763 L 616 768 L 622 773 L 628 774 L 634 773 L 639 770 L 640 768 L 639 765 L 636 765 L 633 768 L 630 769 L 624 768 L 621 765 L 619 761 L 619 755 L 620 752 L 624 748 L 630 747 L 635 751 L 640 750 L 640 748 L 637 745 L 633 743 Z"/>
+                    <path d="M 580 744 L 581 773 L 585 773 L 598 754 L 600 756 L 600 767 L 599 768 L 599 771 L 600 773 L 604 773 L 604 743 L 600 743 L 598 745 L 598 746 L 593 752 L 592 755 L 586 762 L 584 743 Z"/>
+                    <path d="M 524 743 L 523 745 L 523 771 L 524 773 L 528 773 L 529 771 L 528 759 L 530 756 L 534 762 L 536 768 L 540 768 L 543 763 L 543 761 L 547 755 L 549 773 L 553 772 L 552 743 L 548 743 L 546 745 L 540 758 L 538 759 L 536 757 L 532 750 L 532 748 L 529 743 Z"/>
+                    <path d="M 498 744 L 495 754 L 492 759 L 492 762 L 490 764 L 488 770 L 488 773 L 493 772 L 495 767 L 506 766 L 509 769 L 509 771 L 511 773 L 515 772 L 515 770 L 512 765 L 505 745 L 503 743 L 500 743 Z M 502 751 L 505 758 L 504 761 L 498 760 L 499 755 Z"/>
+                    <path d="M 450 744 L 450 750 L 449 752 L 450 773 L 454 773 L 455 768 L 455 755 L 459 760 L 459 762 L 462 767 L 467 767 L 468 763 L 473 756 L 475 773 L 479 772 L 478 743 L 474 743 L 472 745 L 466 758 L 464 759 L 462 757 L 457 745 L 455 743 Z"/>
+                    <path d="M 433 743 L 418 744 L 418 771 L 419 773 L 423 773 L 423 771 L 424 770 L 423 765 L 426 762 L 434 762 L 436 761 L 440 756 L 440 750 L 438 746 Z M 424 749 L 432 748 L 434 750 L 434 755 L 431 758 L 425 758 Z"/>
+                    <path d="M 389 743 L 385 745 L 382 748 L 379 755 L 379 760 L 381 767 L 386 772 L 389 773 L 392 773 L 393 774 L 400 773 L 402 772 L 408 765 L 409 762 L 409 755 L 406 748 L 403 745 L 399 743 Z M 393 747 L 396 747 L 400 749 L 403 754 L 403 763 L 396 769 L 392 769 L 388 767 L 385 763 L 385 754 L 390 748 Z"/>
+                    <path d="M 347 743 L 346 745 L 346 771 L 347 773 L 351 773 L 351 767 L 353 760 L 365 761 L 366 773 L 370 772 L 369 743 L 365 744 L 365 754 L 363 756 L 354 756 L 351 752 L 350 743 Z"/>
+                    <path d="M 260 744 L 261 773 L 265 773 L 265 751 L 266 749 L 278 749 L 278 771 L 280 773 L 284 772 L 284 744 L 282 743 Z"/>
+                    <path d="M 302 743 L 295 749 L 293 753 L 293 763 L 297 770 L 301 773 L 306 774 L 313 773 L 317 771 L 321 766 L 322 763 L 322 754 L 321 751 L 316 745 L 312 743 L 308 742 Z M 308 747 L 312 748 L 315 751 L 317 757 L 317 760 L 315 765 L 313 767 L 309 769 L 305 769 L 299 764 L 298 761 L 298 755 L 299 752 L 303 748 Z"/>
+                    <path d="M 820 528 L 826 533 L 827 536 L 828 603 L 826 616 L 821 620 L 821 623 L 869 623 L 879 621 L 887 618 L 897 611 L 901 607 L 907 597 L 910 588 L 911 580 L 911 569 L 910 562 L 907 553 L 902 544 L 895 537 L 889 533 L 880 529 L 872 527 L 865 526 Z M 848 536 L 864 536 L 875 540 L 885 549 L 887 552 L 887 554 L 889 556 L 890 562 L 892 565 L 892 584 L 889 594 L 885 601 L 878 608 L 870 612 L 866 613 L 850 613 L 848 612 L 845 608 L 846 537 Z"/>
+                    <path d="M 711 526 L 712 530 L 717 534 L 718 536 L 718 614 L 717 616 L 712 620 L 712 623 L 735 620 L 730 616 L 729 614 L 730 553 L 736 560 L 739 565 L 745 571 L 750 579 L 762 593 L 776 612 L 781 617 L 784 622 L 794 622 L 794 538 L 796 532 L 801 529 L 800 526 L 777 527 L 777 529 L 780 530 L 784 535 L 783 591 L 770 573 L 755 555 L 733 526 Z"/>
+                    <path d="M 637 528 L 640 531 L 641 534 L 639 541 L 637 543 L 637 546 L 634 551 L 631 561 L 626 571 L 620 586 L 617 596 L 614 601 L 614 604 L 612 606 L 609 614 L 602 620 L 602 623 L 627 620 L 622 616 L 622 611 L 627 597 L 629 595 L 663 595 L 665 597 L 670 610 L 670 617 L 668 619 L 667 619 L 666 623 L 697 623 L 697 620 L 692 616 L 687 607 L 687 604 L 685 602 L 676 576 L 673 571 L 673 568 L 671 566 L 670 561 L 668 558 L 667 553 L 665 551 L 665 548 L 657 528 L 655 526 Z M 646 549 L 650 557 L 654 570 L 656 572 L 657 578 L 659 581 L 658 585 L 634 585 L 632 583 L 634 580 L 643 554 Z"/>
+                    <path d="M 519 529 L 525 534 L 526 537 L 526 613 L 525 615 L 519 620 L 519 623 L 587 622 L 589 610 L 588 600 L 580 609 L 574 612 L 569 613 L 550 613 L 547 612 L 545 610 L 544 607 L 544 538 L 546 533 L 550 530 L 552 527 Z"/>
+                    <path d="M 374 527 L 374 529 L 377 530 L 379 532 L 381 536 L 381 613 L 378 618 L 374 620 L 374 623 L 406 621 L 402 618 L 399 613 L 399 537 L 400 534 L 405 526 Z"/>
+                    <path d="M 263 528 L 268 532 L 270 535 L 271 539 L 271 612 L 268 618 L 264 621 L 264 623 L 288 620 L 283 616 L 282 614 L 282 587 L 281 568 L 283 554 L 287 558 L 293 567 L 298 572 L 301 577 L 306 582 L 315 595 L 320 600 L 327 610 L 335 619 L 335 620 L 338 623 L 347 622 L 348 613 L 347 539 L 349 533 L 354 529 L 355 527 L 353 526 L 329 527 L 330 529 L 336 534 L 337 537 L 336 590 L 314 563 L 312 559 L 307 554 L 301 545 L 296 540 L 290 531 L 285 526 Z"/>
+                    <path d="M 210 527 L 211 529 L 216 533 L 217 535 L 217 614 L 216 616 L 211 620 L 211 623 L 243 622 L 242 620 L 238 618 L 235 611 L 235 539 L 238 531 L 242 529 L 243 527 L 241 526 Z"/>
+                    <path d="M 188 526 L 123 528 L 128 532 L 130 536 L 130 613 L 129 616 L 126 619 L 125 619 L 124 623 L 155 620 L 149 615 L 148 609 L 148 582 L 150 580 L 171 580 L 174 581 L 178 586 L 181 585 L 181 566 L 180 564 L 178 564 L 174 568 L 169 570 L 149 569 L 148 567 L 148 539 L 151 536 L 172 536 L 177 537 L 181 539 L 185 543 L 187 547 L 189 547 L 190 545 L 189 541 L 190 538 L 190 534 Z"/>
+                    <path d="M 458 524 L 444 528 L 435 536 L 431 545 L 431 559 L 434 566 L 440 573 L 454 581 L 463 584 L 469 587 L 476 594 L 478 598 L 478 604 L 476 608 L 470 614 L 467 615 L 455 615 L 450 614 L 444 610 L 436 602 L 433 596 L 431 596 L 430 598 L 432 620 L 441 623 L 452 625 L 468 625 L 479 622 L 489 615 L 495 605 L 496 593 L 495 587 L 492 581 L 487 575 L 480 570 L 472 567 L 470 565 L 456 559 L 453 557 L 448 551 L 448 543 L 450 539 L 453 536 L 457 534 L 463 533 L 471 534 L 477 537 L 484 544 L 487 550 L 490 550 L 489 528 L 486 528 L 478 525 L 470 524 Z"/>
+                    <path d="M 367 371 L 368 440 L 454 440 L 491 476 L 510 496 L 513 497 L 515 496 L 527 484 L 528 482 L 531 480 L 533 477 L 571 440 L 657 440 L 657 370 L 655 370 L 650 375 L 639 383 L 638 385 L 638 418 L 636 420 L 566 420 L 563 421 L 556 426 L 513 468 L 511 468 L 481 437 L 462 421 L 458 420 L 387 419 L 387 385 L 382 380 L 378 378 L 377 376 L 372 373 L 370 370 Z"/>
+                    <path d="M 397 377 L 401 381 L 407 384 L 417 387 L 426 392 L 435 398 L 445 407 L 460 407 L 468 409 L 472 412 L 475 413 L 513 448 L 515 447 L 549 414 L 556 409 L 564 406 L 570 405 L 582 405 L 593 400 L 607 390 L 623 374 L 624 370 L 622 370 L 615 373 L 613 375 L 610 375 L 605 378 L 588 384 L 585 384 L 582 386 L 578 387 L 569 387 L 560 385 L 551 381 L 548 381 L 543 378 L 538 377 L 523 370 L 511 367 L 505 364 L 501 364 L 498 362 L 482 359 L 456 358 L 445 359 L 430 362 L 427 364 L 423 364 L 406 370 L 404 372 L 400 373 Z"/>
+                    <path d="M 638 225 L 638 251 L 645 259 L 676 290 L 684 297 L 683 300 L 639 343 L 638 345 L 638 370 L 640 370 L 646 365 L 712 300 L 712 296 L 649 234 L 648 232 L 645 230 L 643 227 L 640 225 Z"/>
+                    <path d="M 386 224 L 384 225 L 359 249 L 312 297 L 312 299 L 363 349 L 375 362 L 384 370 L 387 370 L 387 345 L 379 336 L 371 329 L 342 300 L 341 298 L 345 293 L 346 293 L 387 251 Z"/>
+                    <path d="M 367 157 L 369 227 L 377 220 L 382 217 L 387 212 L 387 179 L 389 177 L 459 177 L 461 176 L 513 125 L 557 168 L 564 176 L 566 177 L 636 177 L 638 179 L 638 213 L 654 226 L 657 227 L 656 156 L 574 156 L 524 107 L 521 103 L 513 96 L 504 103 L 476 131 L 476 132 L 471 136 L 470 138 L 451 156 L 369 156 Z"/>
+                </g>
+                <g class="logo-cyan">
+                    <path d="M 796 686 L 797 688 L 799 688 L 800 689 L 900 688 L 902 686 L 891 684 L 797 684 Z"/>
+                    <path d="M 126 685 L 127 688 L 175 689 L 226 688 L 232 689 L 233 688 L 235 688 L 236 686 L 234 684 L 131 684 Z"/>
+                    <path d="M 739 666 L 739 668 L 734 678 L 728 696 L 724 704 L 724 706 L 730 706 L 732 700 L 737 696 L 748 696 L 753 698 L 755 705 L 762 704 L 747 666 Z M 743 675 L 745 677 L 749 687 L 748 691 L 737 690 L 737 687 L 740 682 L 741 677 Z"/>
+                    <path d="M 673 666 L 674 706 L 679 706 L 680 689 L 682 688 L 686 691 L 698 706 L 705 706 L 704 703 L 689 685 L 701 671 L 703 665 L 698 665 L 692 671 L 688 677 L 681 683 L 679 681 L 679 665 Z"/>
+                    <path d="M 617 666 L 617 684 L 618 687 L 622 691 L 625 692 L 635 692 L 639 690 L 641 692 L 642 706 L 645 707 L 647 706 L 648 667 L 646 665 L 641 666 L 641 683 L 639 685 L 636 686 L 628 686 L 626 685 L 623 681 L 622 665 Z"/>
+                    <path d="M 528 667 L 523 665 L 506 665 L 504 667 L 505 674 L 505 704 L 504 705 L 511 704 L 510 700 L 512 692 L 521 692 L 526 691 L 528 690 L 534 683 L 534 675 L 533 672 Z M 512 671 L 522 671 L 524 672 L 527 675 L 528 678 L 528 680 L 526 683 L 522 686 L 511 685 L 510 683 Z"/>
+                    <path d="M 398 665 L 391 669 L 387 673 L 384 680 L 384 691 L 385 694 L 389 701 L 396 706 L 399 707 L 411 707 L 414 706 L 417 704 L 422 698 L 419 695 L 416 695 L 413 699 L 408 701 L 401 701 L 397 699 L 393 695 L 391 691 L 391 681 L 395 674 L 400 671 L 403 671 L 404 670 L 409 671 L 413 673 L 414 675 L 417 677 L 421 675 L 421 672 L 417 668 L 411 665 Z"/>
+                    <path d="M 342 665 L 339 669 L 333 687 L 325 705 L 328 707 L 332 706 L 335 698 L 339 696 L 349 696 L 353 697 L 355 699 L 357 706 L 360 707 L 364 704 L 362 701 L 349 666 L 347 665 Z M 345 675 L 347 678 L 351 688 L 350 691 L 339 690 L 339 687 L 342 679 Z"/>
+                    <path d="M 301 667 L 294 665 L 277 666 L 276 672 L 276 689 L 277 696 L 276 697 L 276 703 L 277 704 L 277 706 L 280 707 L 282 706 L 283 694 L 285 692 L 294 692 L 298 691 L 302 689 L 304 687 L 306 683 L 306 674 L 304 670 Z M 283 673 L 285 671 L 294 671 L 296 672 L 299 675 L 299 681 L 298 683 L 294 686 L 285 686 L 283 684 Z"/>
+                    <path d="M 581 665 L 575 664 L 569 665 L 564 667 L 559 671 L 555 679 L 554 689 L 556 696 L 560 702 L 561 702 L 566 706 L 569 707 L 580 707 L 587 704 L 592 699 L 595 692 L 595 679 L 592 673 L 586 667 Z M 570 671 L 575 670 L 580 671 L 587 677 L 589 683 L 589 689 L 587 694 L 583 699 L 579 701 L 571 701 L 568 700 L 562 693 L 561 689 L 561 683 L 563 677 Z"/>
+                    <path d="M 458 665 L 453 667 L 446 674 L 444 679 L 443 688 L 444 693 L 446 698 L 452 704 L 459 707 L 470 707 L 476 704 L 481 699 L 480 696 L 476 695 L 472 699 L 468 701 L 461 701 L 458 700 L 454 697 L 451 692 L 450 689 L 450 683 L 452 677 L 459 671 L 468 671 L 472 673 L 477 677 L 479 676 L 481 673 L 479 670 L 471 665 L 465 664 Z"/>
+                    <path d="M 515 203 L 500 206 L 487 211 L 476 218 L 467 226 L 460 235 L 452 250 L 450 256 L 448 267 L 448 283 L 451 296 L 454 303 L 456 305 L 456 307 L 467 322 L 475 329 L 481 333 L 497 340 L 506 342 L 525 342 L 534 340 L 542 337 L 553 331 L 563 323 L 570 315 L 576 306 L 581 294 L 581 292 L 578 294 L 571 303 L 562 310 L 555 314 L 541 318 L 525 318 L 513 315 L 501 308 L 495 303 L 489 296 L 482 284 L 479 275 L 478 266 L 479 251 L 482 242 L 487 232 L 500 218 L 507 213 L 515 209 L 521 207 L 534 205 L 527 203 Z"/>
+                </g>
+            </svg>
+        </div>
+
+        <!-- Calculator Header & Tabs (Single row: title on left, compact 200px toggle on right) -->
+        <div class="flex items-center justify-between gap-2-5 w-full">
+            <div class="flex-1 min-w-0" style="padding-right: 0.25rem;">
+                <h1 class="calc-main-title">
+                    Параметры рассрочки
+                </h1>
+            </div>
+
+            <!-- Mode Tabs Toggle (Fixed 200px) -->
+            <div class="shrink-0 select-none">
+                <div class="relative flex tab-toggle-container">
+                    <div id="tab-pill" class="tab-pill-bg"></div>
+                    <button type="button" class="tab-btn active relative flex-1" id="tab-no-down" onclick="setDownPaymentMode(false)">Без взноса</button>
+                    <button type="button" class="tab-btn relative flex-1" id="tab-with-down" onclick="setDownPaymentMode(true)">Со взносом</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Calculator Inputs Grid (2 Columns on Desktop, 1 Column on Mobile) -->
+        <div class="calc-inputs-grid">
+            <!-- Price Input Card -->
+            <div class="space-y-3 glass-panel" style="padding: 1.15rem;" id="price-container">
+                <div class="flex justify-between items-center gap-2">
+                    <label class="card-label">Стоимость товара</label>
+                    <div class="input-badge shrink-0 gap-1-5" onclick="document.getElementById('price-input').focus()">
+                        <span class="material-symbols-outlined input-edit-icon" title="Нажмите, чтобы ввести сумму">edit</span>
+                        <input class="calc-text-input" id="price-input" type="text" inputmode="numeric" enterkeyhint="done" autocomplete="off" placeholder="0" value="100 000">
+                        <span class="calc-currency-sign">₽</span>
+                    </div>
+                </div>
+                <input id="price-slider" max="5000000" min="10000" step="1000" type="range" value="100000">
+                <div class="flex justify-between sub-info">
+                    <span id="price-min-label">10 000 ₽</span>
+                    <span id="price-max-label">5 000 000 ₽</span>
+                </div>
+                <!-- Quick Price Presets -->
+                <div id="price-presets-container" class="border-divider-top" style="padding-top: 0.375rem;">
+                    <div class="presets-row-base">
+                        <button type="button" onclick="setPresetPrice(35000)" class="preset-chip">35 000 ₽</button>
+                        <button type="button" onclick="setPresetPrice(50000)" class="preset-chip">50 000 ₽</button>
+                        <button type="button" onclick="setPresetPrice(75000)" class="preset-chip">75 000 ₽</button>
+                        <button type="button" onclick="setPresetPrice(100000)" class="preset-chip">100 000 ₽</button>
+                        <button type="button" onclick="setPresetPrice(1000000)" class="preset-chip">1 000 000 ₽</button>
+                        <button type="button" onclick="setPresetPrice(2000000)" class="preset-chip">2 000 000 ₽</button>
+                        <button type="button" onclick="setPresetPrice(5000000)" class="preset-chip">5 000 000 ₽</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Term Input Card -->
+            <div class="space-y-3 glass-panel" style="padding: 1.15rem;" id="term-container">
+                <div class="flex justify-between items-center gap-2">
+                    <label class="card-label">Срок рассрочки</label>
+                    <div class="input-badge shrink-0 gap-1-5" onclick="document.getElementById('term-input').focus()">
+                        <span class="material-symbols-outlined input-edit-icon" title="Нажмите, чтобы ввести срок">edit</span>
+                        <input class="calc-term-input" id="term-input" type="text" inputmode="numeric" enterkeyhint="done" autocomplete="off" placeholder="0" value="12">
+                        <span class="calc-currency-sign">мес.</span>
+                    </div>
+                </div>
+                <input id="term-slider" max="12" min="3" step="1" type="range" value="12">
+                <div class="flex justify-between sub-info">
+                    <span>3 мес.</span>
+                    <span>12 мес.</span>
+                </div>
+                <!-- Quick Term Presets -->
+                <div class="presets-term-row border-divider-top" style="padding-top: 0.375rem;">
+                    <button type="button" onclick="setPresetTerm(3)" class="preset-chip">3 мес</button>
+                    <button type="button" onclick="setPresetTerm(6)" class="preset-chip">6 мес</button>
+                    <button type="button" onclick="setPresetTerm(9)" class="preset-chip">9 мес</button>
+                    <button type="button" onclick="setPresetTerm(12)" class="preset-chip">12 мес</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Down Payment Card (Silky Smooth Accordion Expansion) -->
+        <div id="down-payment-wrapper" class="down-payment-wrapper">
+            <div class="down-payment-inner">
+                <div class="space-y-3 glass-panel" style="padding: 1.15rem;" id="down-payment-container">
+                    <div class="flex justify-between items-center gap-2">
+                        <label class="card-label">Первоначальный<br>взнос</label>
+                        <div class="input-badge shrink-0 gap-1-5" onclick="document.getElementById('down-input').focus()">
+                            <span class="material-symbols-outlined input-edit-icon" title="Нажмите, чтобы ввести взнос">edit</span>
+                            <input class="calc-text-input" id="down-input" type="text" inputmode="numeric" enterkeyhint="done" autocomplete="off" placeholder="0" value="0">
+                            <span class="calc-currency-sign">₽</span>
+                        </div>
+                    </div>
+                    <input id="down-slider" max="75000" min="0" step="1" type="range" value="0">
+                    <div class="flex justify-between sub-info">
+                        <span id="down-min-label">10%</span>
+                        <span id="down-max-label">85%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Result Cards Dashboard (3 Columns on Desktop, 1+2 on Mobile) -->
+        <div class="calc-results-grid">
+            <!-- Highlight Card (Monthly Payment) -->
+            <div class="highlight-card result-stat-card relative overflow-hidden">
+                <span class="material-symbols-outlined result-watermark-icon">event_repeat</span>
+                <div class="result-card-header relative" style="z-index: 2;">
+                    <span class="card-label-gold">Ежемесячный платеж</span>
+                </div>
+                <div class="relative" style="z-index: 2;">
+                    <p class="stat-val-highlight" id="monthly-payment">12 500 ₽</p>
+                </div>
+            </div>
+
+            <!-- Sub-grid: 2 columns on Mobile, flattened on Desktop via md:contents -->
+            <div class="calc-sub-results">
+                <!-- Markup Card -->
+                <div class="glass-panel result-stat-card relative overflow-hidden">
+                    <span class="material-symbols-outlined result-watermark-icon">donut_large</span>
+                    <div class="result-card-header relative" style="z-index: 2;">
+                        <span class="card-label-gold">Наценка</span>
+                    </div>
+                    <div class="relative" style="z-index: 2;">
+                        <p class="stat-val-secondary" id="markup">50 000 ₽</p>
+                    </div>
+                </div>
+
+                <!-- Total Cost Card -->
+                <div class="glass-panel result-stat-card relative overflow-hidden">
+                    <span class="material-symbols-outlined result-watermark-icon">workspace_premium</span>
+                    <div class="result-card-header relative" style="z-index: 2;">
+                        <span class="card-label-gold">Итоговая стоимость</span>
+                    </div>
+                    <div class="relative" style="z-index: 2;">
+                        <p class="stat-val-secondary" id="total-cost">150 000 ₽</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons Flow: 3 direct button children, zero WebKit display:contents bugs -->
+        <div class="calc-actions-flow">
+            <button type="button" class="btn-action btn-action-primary" onclick="copyCalculationSummary()">
+                <span class="material-symbols-outlined">content_copy</span>
+                <span>Скопировать расчет</span>
+            </button>
+            <button type="button" class="btn-action btn-action-secondary" onclick="openScheduleModal()">
+                <span class="material-symbols-outlined">calendar_month</span>
+                <span>График платежей</span>
+            </button>
+            <button type="button" class="btn-action btn-action-secondary" onclick="saveAsPDF()">
+                <span class="material-symbols-outlined">picture_as_pdf</span>
+                <span>Сохранить PDF</span>
+            </button>
+        </div>
+
+        <!-- Footer Section -->
+        <div class="text-center pb-6">
+            <p style="font-size: 0.75rem; opacity: 0.55; font-weight: 500;">Расчеты носят исключительно справочно-информационный характер.</p>
+        </div>
+
+    </div>
+</section>
+</main>
+
+<script>
+        // DOM Elements
+        const priceSlider = document.getElementById('price-slider');
+        const priceInput = document.getElementById('price-input');
+        const downSlider = document.getElementById('down-slider');
+        const termSlider = document.getElementById('term-slider');
+        
+        const priceContainer = document.getElementById('price-container');
+        const downPaymentContainer = document.getElementById('down-payment-container');
+        const downPaymentWrapper = document.getElementById('down-payment-wrapper');
+        const priceMinLabel = document.getElementById('price-min-label');
+        const priceMaxLabel = document.getElementById('price-max-label');
+        const downMinLabel = document.getElementById('down-min-label');
+        const downMaxLabel = document.getElementById('down-max-label');
+
+        const downInput = document.getElementById('down-input');
+        const termInput = document.getElementById('term-input');
+
+        const monthlyEl = document.getElementById('monthly-payment');
+        const markupEl = document.getElementById('markup');
+        const totalEl = document.getElementById('total-cost');
+
+        const tabPill = document.getElementById('tab-pill');
+        const tabNoDown = document.getElementById('tab-no-down');
+        const tabWithDown = document.getElementById('tab-with-down');
+
+        function updateTabUI(mode) {
+            if (tabPill) {
+                tabPill.style.transform = mode ? 'translateX(100%)' : 'translateX(0%)';
+            }
+            if (mode) {
+                tabWithDown.classList.add('active');
+                tabNoDown.classList.remove('active');
+            } else {
+                tabNoDown.classList.add('active');
+                tabWithDown.classList.remove('active');
+            }
+        }
+
+        function updatePresetsUI(mode) {}
+
+        // Global interaction flag for iOS touch / slider active state
+        let isSliderActive = false;
+
+        // Immediately blur any active text input on touch/slider interaction (iOS Safari keyboard fix)
+        function blurActiveInput() {
+            if (document.activeElement && (document.activeElement.tagName === 'INPUT' && document.activeElement.type !== 'range')) {
+                try { document.activeElement.blur(); } catch (e) {}
+            }
+        }
+
+        let isWithDownPayment = false;
+        let currentPrice = 100000;
+        let currentDown = 0;
+        let currentTerm = 12;
+
+        const ratesNoDown = [0.15, 0.20, 0.25, 0.30, 0.35, 0.38, 0.43, 0.46, 0.47, 0.50];
+        const ratesWithDown = [0.12, 0.14, 0.16, 0.18, 0.22, 0.26, 0.28, 0.30, 0.33, 0.36];
+
+        function getInterpolatedRate(months, isWithDown) {
+            const rates = isWithDown ? ratesWithDown : ratesNoDown;
+            const idx = months - 3;
+            const safeIdx = Math.max(0, Math.min(9, idx));
+            return rates[safeIdx];
+        }
+
+        const MIN_PRICE = 10000;
+        const MAX_PRICE = 5000000;
+        const MAX_PRICE_NO_DOWN = 5000000;
+
+        function setDownPaymentMode(mode, isInitial = false) {
+            blurActiveInput();
+            if (!isInitial && isWithDownPayment === mode) {
+                return;
+            }
+            isWithDownPayment = mode;
+            updateTabUI(mode);
+            updatePresetsUI(mode);
+
+            if (mode) {
+                // Smoothly open Down Payment card
+                if (downPaymentWrapper) downPaymentWrapper.classList.add('open');
+
+                const rate = getInterpolatedRate(currentTerm, true);
+                const totalCost = currentPrice + (currentPrice * rate);
+                const minDown = Math.round(totalCost * 0.10);
+                const maxDown = Math.round(totalCost * 0.85);
+
+                if (currentDown < minDown) {
+                    currentDown = minDown;
+                } else if (currentDown > maxDown) {
+                    currentDown = maxDown;
+                }
+
+                downSlider.min = minDown;
+                downSlider.max = maxDown;
+                downSlider.value = currentDown;
+                downInput.value = currentDown.toLocaleString('ru-RU');
+                updateSliderTrack(downSlider);
+            } else {
+                // Smoothly close Down Payment card
+                if (downPaymentWrapper) downPaymentWrapper.classList.remove('open');
+                
+                currentDown = 0;
+                downSlider.value = 0;
+                downInput.value = '0';
+            }
+
+            priceSlider.max = MAX_PRICE;
+            priceSlider.min = MIN_PRICE;
+            priceSlider.value = currentPrice;
+            priceMinLabel.innerText = `${MIN_PRICE.toLocaleString('ru-RU')} ₽`;
+            priceMaxLabel.innerText = `${MAX_PRICE.toLocaleString('ru-RU')} ₽`;
+            updateSliderTrack(priceSlider);
+            updateCalculator(true, true, true, isInitial);
+        }
+
+        let priceBeforeEdit = 100000;
+        let downBeforeEdit = 0;
+        let termBeforeEdit = 12;
+
+        function handlePriceFocus() {
+            priceBeforeEdit = currentPrice;
+            priceInput.value = '';
+        }
+
+        function handlePriceInput() {
+            let digits = priceInput.value.replace(/\D/g, '');
+            priceInput.value = digits;
+            if (digits.length === 0) return;
+            let val = parseInt(digits, 10) || 0;
+            if (val > MAX_PRICE) {
+                val = MAX_PRICE;
+                priceInput.value = val;
+            }
+            currentPrice = val;
+            priceSlider.value = val >= MIN_PRICE ? val : MIN_PRICE;
+            updateCalculator(false, true, true);
+        }
+
+        function handlePriceBlur() {
+            if (isSliderActive) {
+                priceInput.value = currentPrice.toLocaleString('ru-RU');
+                return;
+            }
+            let digits = priceInput.value.replace(/\D/g, '');
+            let val = parseInt(digits, 10);
+            if (isNaN(val) || digits.length === 0) {
+                currentPrice = priceBeforeEdit;
+            } else {
+                if (val < MIN_PRICE) val = MIN_PRICE;
+                if (val > MAX_PRICE) val = MAX_PRICE;
+                currentPrice = val;
+            }
+            priceInput.value = currentPrice.toLocaleString('ru-RU');
+            priceSlider.value = currentPrice;
+            updateCalculator(true, true, true);
+        }
+
+        function handleDownFocus() {
+            downBeforeEdit = currentDown;
+            downInput.value = '';
+        }
+
+        function handleDownInput() {
+            let digits = downInput.value.replace(/\D/g, '');
+            downInput.value = digits;
+            if (digits.length === 0) return;
+            let val = parseInt(digits, 10) || 0;
+            const price = currentPrice;
+            const rate = getInterpolatedRate(currentTerm, isWithDownPayment);
+            const total = price + (price * rate);
+            const minDown = Math.round(total * 0.10);
+            const maxDown = Math.round(total * 0.85);
+            if (val > maxDown) {
+                val = maxDown;
+                downInput.value = val;
+            }
+            currentDown = val;
+            downSlider.value = val >= minDown ? (val > maxDown ? maxDown : val) : minDown;
+            updateCalculator(false, false, true);
+        }
+
+        function handleDownBlur() {
+            if (isSliderActive) {
+                downInput.value = currentDown.toLocaleString('ru-RU');
+                return;
+            }
+            let digits = downInput.value.replace(/\D/g, '');
+            let val = parseInt(digits, 10);
+            const price = currentPrice;
+            const rate = getInterpolatedRate(currentTerm, isWithDownPayment);
+            const total = price + (price * rate);
+            const minDown = Math.round(total * 0.10);
+            const maxDown = Math.round(total * 0.85);
+            if (isNaN(val) || digits.length === 0 || val < minDown) {
+                currentDown = minDown;
+            } else {
+                if (val > maxDown) val = maxDown;
+                currentDown = val;
+            }
+            downInput.value = currentDown.toLocaleString('ru-RU');
+            downSlider.value = currentDown;
+            updateCalculator(true, true, true);
+        }
+
+        function handleTermFocus() {
+            termBeforeEdit = currentTerm;
+            termInput.value = '';
+        }
+
+        function handleTermInput() {
+            let digits = termInput.value.replace(/\D/g, '');
+            termInput.value = digits;
+            if (digits.length === 0) return;
+            let val = parseInt(digits, 10) || 0;
+            if (val > 12) {
+                val = 12;
+            }
+            currentTerm = val;
+            termSlider.value = val >= 3 ? (val > 12 ? 12 : val) : 3;
+            updateCalculator(true, true, false);
+        }
+
+        function handleTermBlur() {
+            if (isSliderActive) {
+                termInput.value = currentTerm;
+                return;
+            }
+            let digits = termInput.value.replace(/\D/g, '');
+            let val = parseInt(digits, 10);
+            if (isNaN(val) || digits.length === 0) {
+                currentTerm = termBeforeEdit;
+            } else {
+                if (val < 3) val = 3;
+                if (val > 12) val = 12;
+                currentTerm = val;
+            }
+            termInput.value = currentTerm;
+            termSlider.value = currentTerm;
+            updateCalculator(true, true, true);
+        }
+
+        function setPresetPrice(val) {
+            blurActiveInput();
+            if (val > MAX_PRICE) val = MAX_PRICE;
+            if (val < MIN_PRICE) val = MIN_PRICE;
+            currentPrice = val;
+            priceSlider.value = val;
+            priceInput.value = val.toLocaleString('ru-RU');
+            updateCalculator(true, true, true, false);
+        }
+
+        function setPresetTerm(val) {
+            blurActiveInput();
+            if (val < 3) val = 3;
+            if (val > 12) val = 12;
+            currentTerm = val;
+            termSlider.value = val;
+            termInput.value = val;
+            updateCalculator(true, true, true, false);
+        }
+
+        function updateSliderTrack(slider) {
+            if (!slider) return;
+            const min = parseFloat(slider.min) || 0;
+            const max = parseFloat(slider.max) || 100;
+            const val = parseFloat(slider.value) || 0;
+            const percentage = max > min ? Math.max(0, Math.min(100, ((val - min) / (max - min)) * 100)) : 0;
+            const isDark = document.documentElement.classList.contains('dark');
+            const isNeo = document.documentElement.classList.contains('style-neo-fintech');
+            const isRoyal = document.documentElement.classList.contains('style-royal-navy');
+            const isNordic = document.documentElement.classList.contains('style-nordic-glass');
+
+            let gradStart, gradMid, gradEnd;
+            if (isNeo) {
+                if (isDark) {
+                    gradStart = '#061a33';
+                    gradMid = '#0077b6';
+                    gradEnd = '#00d2ff';
+                } else {
+                    gradStart = '#0284c7';
+                    gradMid = '#00b4d8';
+                    gradEnd = '#38b6ff';
+                }
+            } else if (isRoyal) {
+                if (isDark) {
+                    gradStart = '#0c1538';
+                    gradMid = '#1e40af';
+                    gradEnd = '#60a5fa';
+                } else {
+                    gradStart = '#172554';
+                    gradMid = '#1e40af';
+                    gradEnd = '#3b82f6';
+                }
+            } else if (isNordic) {
+                if (isDark) {
+                    gradStart = '#052e4e';
+                    gradMid = '#0284c7';
+                    gradEnd = '#7dd3fc';
+                } else {
+                    gradStart = '#0369a1';
+                    gradMid = '#0ea5e9';
+                    gradEnd = '#38b6ff';
+                }
+            } else {
+                // Classic Blue (Default)
+                if (isDark) {
+                    gradStart = '#083c74';
+                    gradMid = '#0f70b5';
+                    gradEnd = '#38b6ff';
+                } else {
+                    gradStart = '#002554';
+                    gradMid = '#0b4b89';
+                    gradEnd = '#188bf6';
+                }
+            }
+            slider.style.background = `linear-gradient(to right, ${gradStart} 0%, ${gradMid} ${percentage > 30 ? percentage / 2 : percentage}%, ${gradEnd} ${percentage}%, var(--track-unfilled) ${percentage}%, var(--track-unfilled) 100%)`;
+        }
+
+        const numberAnimators = new WeakMap();
+
+        function animateValue(element, targetValue, suffix = ' ₽', immediate = false) {
+            if (!element) return;
+            targetValue = Math.round(targetValue);
+
+            let state = numberAnimators.get(element);
+            if (!state) {
+                const attr = element.getAttribute('data-val');
+                let current = attr !== null ? parseFloat(attr) : targetValue;
+                if (isNaN(current)) current = targetValue;
+                state = {
+                    current: current,
+                    target: targetValue,
+                    rafId: null,
+                    lastTime: null,
+                    suffix: suffix
+                };
+                numberAnimators.set(element, state);
+            }
+
+            state.target = targetValue;
+            state.suffix = suffix;
+
+            if (immediate) {
+                if (state.rafId) {
+                    cancelAnimationFrame(state.rafId);
+                    state.rafId = null;
+                }
+                state.current = targetValue;
+                element.innerText = `${targetValue.toLocaleString('ru-RU')}${suffix}`;
+                element.setAttribute('data-val', targetValue);
+                return;
+            }
+
+            // If already at target and not animating
+            if (Math.abs(state.target - state.current) < 1 && !state.rafId) {
+                state.current = targetValue;
+                element.innerText = `${targetValue.toLocaleString('ru-RU')}${suffix}`;
+                element.setAttribute('data-val', targetValue);
+                return;
+            }
+
+            if (!state.rafId) {
+                state.lastTime = performance.now();
+
+                const step = (now) => {
+                    const dt = Math.min((now - state.lastTime) / 1000, 0.05);
+                    state.lastTime = now;
+
+                    // Snappy exponential lerp factor (~26) provides instant buttery smooth number gliding at 60/120fps
+                    const blend = 1 - Math.exp(-26 * dt);
+                    state.current += (state.target - state.current) * blend;
+
+                    if (Math.abs(state.target - state.current) < 1.5) {
+                        state.current = state.target;
+                        element.innerText = `${state.target.toLocaleString('ru-RU')}${state.suffix}`;
+                        element.setAttribute('data-val', state.target);
+                        state.rafId = null;
+                    } else {
+                        const val = Math.round(state.current);
+                        element.innerText = `${val.toLocaleString('ru-RU')}${state.suffix}`;
+                        element.setAttribute('data-val', val);
+                        state.rafId = requestAnimationFrame(step);
+                    }
+                };
+                state.rafId = requestAnimationFrame(step);
+            }
+        }
+
+        function updateCalculator(updatePrice = true, updateDown = true, updateTerm = true, immediate = false) {
+            const price = currentPrice;
+            const months = currentTerm;
+            
+            if (updatePrice && (isSliderActive || document.activeElement !== priceInput)) {
+                priceInput.value = price.toLocaleString('ru-RU');
+            }
+            if (updateTerm && (isSliderActive || document.activeElement !== termInput)) {
+                termInput.value = months;
+            }
+            
+            const rate = getInterpolatedRate(months, isWithDownPayment);
+            const totalCost = price + (price * rate);
+            const markup = totalCost - price;
+            
+            if (isWithDownPayment) {
+                const minDown = Math.round(totalCost * 0.10);
+                const maxDown = Math.round(totalCost * 0.85);
+                
+                downSlider.min = minDown;
+                downSlider.max = maxDown;
+                
+                if (currentDown < minDown) currentDown = minDown;
+                if (currentDown > maxDown) currentDown = maxDown;
+                
+                downSlider.value = currentDown;
+                if (updateDown && (isSliderActive || document.activeElement !== downInput)) {
+                    downInput.value = currentDown.toLocaleString('ru-RU');
+                }
+                
+                const percent = Math.round((currentDown / totalCost) * 100);
+                downMinLabel.innerText = `${minDown.toLocaleString('ru-RU')} ₽ (10%)`;
+                downMaxLabel.innerText = `${maxDown.toLocaleString('ru-RU')} ₽ (85%)`;
+                
+                const remaining = totalCost - currentDown;
+                const monthly = Math.round(remaining / months);
+                
+                animateValue(monthlyEl, monthly, ' ₽', immediate);
+                animateValue(markupEl, Math.round(markup), ' ₽', immediate);
+                animateValue(totalEl, Math.round(totalCost), ' ₽', immediate);
+            } else {
+                const monthly = Math.round(totalCost / months);
+                animateValue(monthlyEl, monthly, ' ₽', immediate);
+                animateValue(markupEl, Math.round(markup), ' ₽', immediate);
+                animateValue(totalEl, Math.round(totalCost), ' ₽', immediate);
+            }
+            
+            updateSliderTrack(priceSlider);
+            updateSliderTrack(termSlider);
+            updateSliderTrack(downSlider);
+        }
+
+        // High Refresh Rate (120 FPS) Coalesced Slider Event Pipeline
+        let sliderRafId = null;
+        function queueSliderUpdate() {
+            if (sliderRafId) return;
+            sliderRafId = requestAnimationFrame(() => {
+                updateCalculator(true, true, true, false);
+                sliderRafId = null;
+            });
+        }
+
+        // Attach Slider Touch & Input Listeners (iOS Safari Virtual Keyboard & 0ms Sync)
+        const rangeSliders = [priceSlider, downSlider, termSlider];
+        rangeSliders.forEach(slider => {
+            if (!slider) return;
+            ['pointerdown', 'touchstart', 'mousedown'].forEach(evt => {
+                slider.addEventListener(evt, () => {
+                    isSliderActive = true;
+                    blurActiveInput();
+                }, { passive: true });
+            });
+        });
+
+        ['pointerup', 'touchend', 'touchcancel', 'mouseup'].forEach(evt => {
+            window.addEventListener(evt, () => {
+                isSliderActive = false;
+            }, { passive: true });
+        });
+
+        // 2-Tier Slider Updates: Tier 1 (Synchronous 0ms UI Feedback) + Tier 2 (Coalesced RAF)
+        priceSlider.addEventListener('input', (e) => {
+            isSliderActive = true;
+            currentPrice = parseInt(e.target.value, 10);
+            priceInput.value = currentPrice.toLocaleString('ru-RU');
+            queueSliderUpdate();
+        });
+
+        downSlider.addEventListener('input', (e) => {
+            isSliderActive = true;
+            currentDown = parseInt(e.target.value, 10);
+            downInput.value = currentDown.toLocaleString('ru-RU');
+            queueSliderUpdate();
+        });
+
+        termSlider.addEventListener('input', (e) => {
+            isSliderActive = true;
+            currentTerm = parseInt(e.target.value, 10);
+            termInput.value = currentTerm;
+            queueSliderUpdate();
+        });
+
+        priceInput.addEventListener('focus', handlePriceFocus);
+        priceInput.addEventListener('input', handlePriceInput);
+        priceInput.addEventListener('blur', handlePriceBlur);
+        priceInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') priceInput.blur();
+        });
+
+        downInput.addEventListener('focus', handleDownFocus);
+        downInput.addEventListener('input', handleDownInput);
+        downInput.addEventListener('blur', handleDownBlur);
+        downInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') downInput.blur();
+        });
+
+        termInput.addEventListener('focus', handleTermFocus);
+        termInput.addEventListener('input', handleTermInput);
+        termInput.addEventListener('blur', handleTermBlur);
+        termInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') termInput.blur();
+        });
+
+        // Header auto-hide on scroll with requestAnimationFrame
+        let lastScrollY = window.scrollY;
+        let ticking = false;
+        const mainHeader = document.getElementById('main-header');
+
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    const currentScrollY = window.scrollY;
+                    if (currentScrollY < 80) {
+                        mainHeader.style.transform = 'translateY(0)';
+                    } else if (currentScrollY > lastScrollY) {
+                        mainHeader.style.transform = 'translateY(-100%)';
+                    } else {
+                        mainHeader.style.transform = 'translateY(0)';
+                    }
+                    lastScrollY = currentScrollY;
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        }, { passive: true });
+        
+        // System Theme Matching & Switcher Logic
+        const colorSchemeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+        function getEffectiveTheme() {
+            const manual = localStorage.getItem('app_theme_mode') || localStorage.getItem('finisland_theme_manual');
+            if (manual === 'dark' || manual === 'light') {
+                return manual;
+            }
+            return colorSchemeQuery.matches ? 'dark' : 'light';
+        }
+
+        function updateThemeMetadata() {
+            const isDark = document.documentElement.classList.contains('dark');
+            let currentStyle = 'classic-blue';
+            const classList = document.documentElement.classList;
+            if (classList.contains('style-neo-fintech')) currentStyle = 'neo-fintech';
+            else if (classList.contains('style-royal-navy')) currentStyle = 'royal-navy';
+            else if (classList.contains('style-nordic-glass')) currentStyle = 'nordic-glass';
+            else currentStyle = 'classic-blue';
+
+            let themeColor;
+            if (isDark) {
+                if (currentStyle === 'neo-fintech') themeColor = '#030712';
+                else if (currentStyle === 'royal-navy') themeColor = '#020617';
+                else if (currentStyle === 'nordic-glass') themeColor = '#020b14';
+                else themeColor = '#020408'; // classic-blue
+            } else {
+                if (currentStyle === 'neo-fintech') themeColor = '#f8fafc';
+                else if (currentStyle === 'royal-navy') themeColor = '#f1f5f9';
+                else if (currentStyle === 'nordic-glass') themeColor = '#f0f9ff';
+                else themeColor = '#f0f4f8'; // classic-blue
+            }
+
+            const themeMeta = document.getElementById('theme-color-meta');
+            if (themeMeta) themeMeta.setAttribute('content', themeColor);
+
+            const appleStatusMeta = document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
+            if (appleStatusMeta) {
+                appleStatusMeta.setAttribute('content', isDark ? 'black-translucent' : 'default');
+            }
+        }
+
+        function applyTheme(theme, isManual = false) {
+            const isDark = theme === 'dark';
+            if (isDark) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+
+            updateThemeMetadata();
+
+            // Update Switcher Icon
+            const iconContainer = document.getElementById('theme-toggle-icon');
+            if (iconContainer) {
+                iconContainer.innerText = isDark ? 'light_mode' : 'dark_mode';
+            }
+
+            if (isManual) {
+                localStorage.setItem('app_theme_mode', theme);
+                localStorage.setItem('finisland_theme_manual', theme);
+            }
+
+            updateSliderTrack(priceSlider);
+            updateSliderTrack(termSlider);
+            updateSliderTrack(downSlider);
+        }
+
+        function cycleTheme() {
+            const current = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+            const next = current === 'dark' ? 'light' : 'dark';
+            applyTheme(next, true);
+            const btn = document.getElementById('theme-toggle-btn');
+            if (btn) btn.blur();
+        }
+
+        // Real-time listener for OS system theme switch
+        if (colorSchemeQuery && colorSchemeQuery.addEventListener) {
+            colorSchemeQuery.addEventListener('change', (e) => {
+                if (!localStorage.getItem('app_theme_mode') && !localStorage.getItem('finisland_theme_manual')) {
+                    applyTheme(e.matches ? 'dark' : 'light', false);
+                }
+            });
+        }
+
+        // =========================================================
+        // SETTINGS MENU CONTROLLER (Themes & Fonts Popover)
+        // =========================================================
+        const fontMap = {
+            'plus-jakarta': {
+                name: 'Plus Jakarta Sans',
+                family: "'Plus Jakarta Sans', sans-serif",
+                headingFamily: "'Manrope', sans-serif",
+                numberFamily: "'Manrope', sans-serif"
+            },
+            manrope: {
+                name: 'Manrope',
+                family: "'Manrope', sans-serif",
+                headingFamily: "'Manrope', sans-serif",
+                numberFamily: "'Manrope', sans-serif"
+            },
+            inter: {
+                name: 'Inter',
+                family: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
+                headingFamily: "'Inter', sans-serif",
+                numberFamily: "'Inter', sans-serif"
+            },
+            montserrat: {
+                name: 'Montserrat',
+                family: "'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif",
+                headingFamily: "'Montserrat', sans-serif",
+                numberFamily: "'Montserrat', sans-serif"
+            },
+            golos: {
+                name: 'Golos Text',
+                family: "'Golos Text', -apple-system, BlinkMacSystemFont, sans-serif",
+                headingFamily: "'Golos Text', sans-serif",
+                numberFamily: "'Golos Text', sans-serif"
+            },
+            unbounded: {
+                name: 'Unbounded',
+                family: "'Unbounded', sans-serif",
+                headingFamily: "'Unbounded', sans-serif",
+                numberFamily: "'Unbounded', sans-serif"
+            }
+        };
+
+        const styleMap = {
+            'classic-blue': 'Классика FinIsland',
+            'neo-fintech': 'Нео-Финтех',
+            'royal-navy': 'Премиум Индиго',
+            'nordic-glass': 'Нордик Гласс'
+        };
+
+        function toggleSettingsMenu(e) {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            blurActiveInput();
+            const menu = document.getElementById('settings-dropdown-menu');
+            const trigger = document.getElementById('settings-menu-trigger');
+            if (!menu) return;
+            const isHidden = (menu.style.display === 'none' || !menu.classList.contains('active'));
+            if (isHidden) {
+                menu.style.display = 'block';
+                menu.classList.add('active');
+                if (trigger) trigger.setAttribute('aria-expanded', 'true');
+                backToMainMenu();
+                updateSettingsBadges();
+            } else {
+                closeSettingsMenu();
+            }
+        }
+
+        function closeSettingsMenu() {
+            const menu = document.getElementById('settings-dropdown-menu');
+            const trigger = document.getElementById('settings-menu-trigger');
+            if (!menu) return;
+            menu.style.display = 'none';
+            menu.classList.remove('active');
+            if (trigger) trigger.setAttribute('aria-expanded', 'false');
+        }
+
+        function showSettingsSubmenu(type) {
+            blurActiveInput();
+            const mainView = document.getElementById('settings-view-main');
+            const themeView = document.getElementById('settings-view-theme');
+            const fontView = document.getElementById('settings-view-font');
+            if (mainView) mainView.style.display = 'none';
+            if (themeView) themeView.style.display = (type === 'theme') ? 'block' : 'none';
+            if (fontView) fontView.style.display = (type === 'font') ? 'block' : 'none';
+        }
+
+        function backToMainMenu() {
+            blurActiveInput();
+            const mainView = document.getElementById('settings-view-main');
+            const themeView = document.getElementById('settings-view-theme');
+            const fontView = document.getElementById('settings-view-font');
+            if (mainView) mainView.style.display = 'block';
+            if (themeView) themeView.style.display = 'none';
+            if (fontView) fontView.style.display = 'none';
+            updateSettingsBadges();
+        }
+
+        function applyDesignStyle(style) {
+            if (!['classic-blue', 'neo-fintech', 'royal-navy', 'nordic-glass'].includes(style)) style = 'classic-blue';
+            
+            document.documentElement.classList.remove(
+                'style-classic-blue', 'style-neo-fintech', 'style-royal-navy', 'style-nordic-glass',
+                'style-classic', 'style-minimal', 'style-minimal-gold', 'style-jade'
+            );
+            document.documentElement.classList.add('style-' + style);
+
+            localStorage.setItem('app_design_style', style);
+            updateThemeMetadata();
+            updateSettingsBadges();
+
+            if (typeof updateSliderTrack === 'function') {
+                if (priceSlider) updateSliderTrack(priceSlider);
+                if (termSlider) updateSliderTrack(termSlider);
+                if (downSlider) updateSliderTrack(downSlider);
+            }
+        }
+
+        function applyFont(fontKey) {
+            if (!fontMap[fontKey]) fontKey = 'plus-jakarta';
+            const f = fontMap[fontKey];
+            
+            document.documentElement.style.setProperty('--calc-font', f.family);
+            document.documentElement.style.setProperty('--calc-heading-font', f.headingFamily || f.family);
+            document.documentElement.style.setProperty('--calc-number-font', f.numberFamily || f.family);
+
+            localStorage.setItem('app_active_font', fontKey);
+            updateSettingsBadges();
+        }
+
+        function updateSettingsBadges() {
+            let currentStyle = 'classic-blue';
+            const classList = document.documentElement.classList;
+            if (classList.contains('style-neo-fintech')) currentStyle = 'neo-fintech';
+            else if (classList.contains('style-royal-navy')) currentStyle = 'royal-navy';
+            else if (classList.contains('style-nordic-glass')) currentStyle = 'nordic-glass';
+            else if (classList.contains('style-classic-blue')) currentStyle = 'classic-blue';
+
+            const themeBadge = document.getElementById('current-theme-badge');
+            if (themeBadge) {
+                themeBadge.innerText = styleMap[currentStyle] || 'Классика FinIsland';
+            }
+
+            // Sync theme checkmarks
+            ['classic-blue', 'neo-fintech', 'royal-navy', 'nordic-glass'].forEach(s => {
+                const item = document.getElementById(`item-style-${s}`);
+                const check = document.getElementById(`check-style-${s}`);
+                const isActive = (s === currentStyle);
+                if (item) item.classList.toggle('active', isActive);
+                if (check) check.style.display = isActive ? 'block' : 'none';
+            });
+
+            const currentFont = localStorage.getItem('app_active_font') || 'plus-jakarta';
+            const fontBadge = document.getElementById('current-font-badge');
+            if (fontBadge && fontMap[currentFont]) {
+                fontBadge.innerText = fontMap[currentFont].name;
+            }
+
+            // Sync font checkmarks
+            Object.keys(fontMap).forEach(f => {
+                const item = document.getElementById(`item-font-${f}`);
+                const check = document.getElementById(`check-font-${f}`);
+                const isActive = (f === currentFont);
+                if (item) item.classList.toggle('active', isActive);
+                if (check) check.style.display = isActive ? 'block' : 'none';
+            });
+        }
+
+        // =========================================================
+        // ACTION BUTTONS & PAYMENT SCHEDULE LOGIC
+        // =========================================================
+        function getRussianMonthsDeclension(months) {
+            if (months === 1) return 'месяц';
+            if (months >= 2 && months <= 4) return 'месяца';
+            return 'месяцев';
+        }
+
+        function generateScheduleData() {
+            const price = currentPrice;
+            const months = currentTerm;
+            const rate = getInterpolatedRate(months, isWithDownPayment);
+            const totalCost = Math.round(price + (price * rate));
+            const down = isWithDownPayment ? currentDown : 0;
+            const remainingToFinance = Math.max(0, totalCost - down);
+            const baseMonthly = Math.round(remainingToFinance / months);
+            
+            const rows = [];
+            const now = new Date();
+            const currentDay = now.getDate();
+            
+            let currentDebt = remainingToFinance;
+            
+            for (let i = 1; i <= months; i++) {
+                const targetDate = new Date(now.getFullYear(), now.getMonth() + i, currentDay);
+                if (targetDate.getDate() !== currentDay) {
+                    targetDate.setDate(0);
+                }
+                let formattedDate = targetDate.toLocaleDateString('ru-RU', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                });
+                formattedDate = formattedDate.replace(/(\s*г\.?)+$/i, '').trim() + ' г.';
+                
+                let payment = (i === months) ? currentDebt : baseMonthly;
+                let debtAfter = Math.max(0, currentDebt - payment);
+                
+                rows.push({
+                    num: i,
+                    date: formattedDate,
+                    payment: payment,
+                    debt: debtAfter
+                });
+                
+                currentDebt = debtAfter;
+            }
+            
+            return {
+                price,
+                down,
+                totalCost,
+                months,
+                monthlyPayment: baseMonthly,
+                rows
+            };
+        }
+
+        function openScheduleModal() {
+            blurActiveInput();
+            const data = generateScheduleData();
+            
+            const priceEl = document.getElementById('modal-summary-price');
+            const downEl = document.getElementById('modal-summary-down');
+            const downWrap = document.getElementById('modal-summary-down-wrap');
+            const monthlyEl = document.getElementById('modal-summary-monthly');
+            const totalEl = document.getElementById('modal-summary-total');
+            const subtitleEl = document.getElementById('schedule-modal-subtitle');
+            const tbody = document.getElementById('schedule-table-body');
+            
+            if (priceEl) priceEl.innerText = `${data.price.toLocaleString('ru-RU')} ₽`;
+            if (downWrap) {
+                if (isWithDownPayment && data.down > 0) {
+                    downWrap.style.display = 'flex';
+                    if (downEl) downEl.innerText = `${data.down.toLocaleString('ru-RU')} ₽`;
+                } else {
+                    downWrap.style.display = 'none';
+                }
+            }
+            if (monthlyEl) monthlyEl.innerText = `${data.monthlyPayment.toLocaleString('ru-RU')} ₽`;
+            if (totalEl) totalEl.innerText = `${data.totalCost.toLocaleString('ru-RU')} ₽`;
+            if (subtitleEl) subtitleEl.innerText = `Рассчитан на ${data.months} ${getRussianMonthsDeclension(data.months)}`;
+            
+            if (tbody) {
+                tbody.innerHTML = '';
+                data.rows.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td class="schedule-col-num">${row.num}</td>
+                        <td>${row.date}</td>
+                        <td class="schedule-col-pay">${row.payment.toLocaleString('ru-RU')} ₽</td>
+                        <td class="schedule-col-debt">${row.debt.toLocaleString('ru-RU')} ₽</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+            
+            const modal = document.getElementById('schedule-modal');
+            if (modal) {
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeScheduleModal() {
+            const modal = document.getElementById('schedule-modal');
+            if (modal) {
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        }
+
+        function copyCalculationSummary() {
+            blurActiveInput();
+            const price = currentPrice;
+            const months = currentTerm;
+            const rate = getInterpolatedRate(months, isWithDownPayment);
+            const totalCost = Math.round(price + (price * rate));
+            const markup = totalCost - price;
+            const down = isWithDownPayment ? currentDown : 0;
+            const downPercent = totalCost > 0 ? Math.round((down / totalCost) * 100) : 0;
+            const remaining = totalCost - down;
+            const monthly = Math.round(remaining / months);
+
+            let text = `*Расчет рассрочки FinIsland* 📊\n\n`;
+            text += `• Стоимость покупки: *${price.toLocaleString('ru-RU')} ₽*\n`;
+            if (isWithDownPayment && down > 0) {
+                text += `• Первоначальный взнос: *${down.toLocaleString('ru-RU')} ₽* (${downPercent}%)\n`;
+            } else {
+                text += `• Первоначальный взнос: *0 ₽* (Без взноса)\n`;
+            }
+            text += `• Срок рассрочки: *${months} ${getRussianMonthsDeclension(months)}*\n`;
+            text += `• Ежемесячный платеж: *${monthly.toLocaleString('ru-RU')} ₽/мес*\n`;
+            text += `• Торговая наценка: *${markup.toLocaleString('ru-RU')} ₽*\n`;
+            text += `• Итоговая стоимость: *${totalCost.toLocaleString('ru-RU')} ₽*`;
+
+            copyToClipboard(text, 'Расчет скопирован!');
+        }
+
+        function copyScheduleText() {
+            const data = generateScheduleData();
+            
+            let text = `*График платежей FinIsland* 📊\n\n`;
+            text += `• Стоимость покупки: *${data.price.toLocaleString('ru-RU')} ₽*\n`;
+            if (isWithDownPayment && data.down > 0) {
+                const percent = Math.round((data.down / data.totalCost) * 100);
+                text += `• Первоначальный взнос: *${data.down.toLocaleString('ru-RU')} ₽* (${percent}%)\n`;
+            }
+            text += `• Срок рассрочки: *${data.months} ${getRussianMonthsDeclension(data.months)}*\n`;
+            text += `• Ежемесячный платеж: *${data.monthlyPayment.toLocaleString('ru-RU')} ₽*\n`;
+            text += `• Итого к оплате: *${data.totalCost.toLocaleString('ru-RU')} ₽*\n\n`;
+            text += `────────────────────\n`;
+            text += `*Помесячный график:*\n\n`;
+            
+            data.rows.forEach(r => {
+                text += `${r.num}. *${r.date}* — *${r.payment.toLocaleString('ru-RU')} ₽* _(остаток: ${r.debt.toLocaleString('ru-RU')} ₽)_\n`;
+            });
+            
+            copyToClipboard(text, 'График скопирован!');
+        }
+
+        function updatePrintSheet() {
+            const data = generateScheduleData();
+            const now = new Date();
+            let dateFormatted = now.toLocaleDateString('ru-RU', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });
+            dateFormatted = dateFormatted.replace(/(\s*г\.?)+$/i, '').trim() + ' г.';
+
+            const printDate = document.getElementById('print-date');
+            const printTerm = document.getElementById('print-term');
+            const printPrice = document.getElementById('print-price');
+            const printDown = document.getElementById('print-down');
+            const printDownCell = document.getElementById('print-down-cell');
+            const printMonthly = document.getElementById('print-monthly');
+            const printMarkup = document.getElementById('print-markup');
+            const printTotal = document.getElementById('print-total');
+            const tbody = document.getElementById('print-table-body');
+
+            if (printDate) printDate.innerText = dateFormatted;
+            if (printTerm) printTerm.innerText = `${data.months} ${getRussianMonthsDeclension(data.months)}`;
+            if (printPrice) printPrice.innerText = `${data.price.toLocaleString('ru-RU')} ₽`;
+            
+            if (printDownCell) {
+                if (isWithDownPayment && data.down > 0) {
+                    const percent = Math.round((data.down / data.totalCost) * 100);
+                    if (printDown) printDown.innerText = `${data.down.toLocaleString('ru-RU')} ₽ (${percent}%)`;
+                } else {
+                    if (printDown) printDown.innerText = `0 ₽ (Без взноса)`;
+                }
+            }
+            
+            const rate = getInterpolatedRate(data.months, isWithDownPayment);
+            const markup = Math.round(data.price * rate);
+            if (printMonthly) printMonthly.innerText = `${data.monthlyPayment.toLocaleString('ru-RU')} ₽`;
+            if (printMarkup) printMarkup.innerText = `${markup.toLocaleString('ru-RU')} ₽`;
+            if (printTotal) printTotal.innerText = `${data.totalCost.toLocaleString('ru-RU')} ₽`;
+
+            if (tbody) {
+                tbody.innerHTML = '';
+                data.rows.forEach(r => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td style="font-weight: 700; text-align: center;">${r.num}</td>
+                        <td>${r.date}</td>
+                        <td style="font-weight: 700; text-align: right;">${r.payment.toLocaleString('ru-RU')} ₽</td>
+                        <td style="text-align: right;">${r.debt.toLocaleString('ru-RU')} ₽</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+        }
+
+        function saveAsPDF() {
+            blurActiveInput();
+            updatePrintSheet();
+            window.print();
+        }
+
+        window.addEventListener('beforeprint', updatePrintSheet);
+
+        function copyToClipboard(text, toastMsg = 'Скопировано!') {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showToast(toastMsg);
+                }).catch(() => {
+                    fallbackCopyText(text, toastMsg);
+                });
+            } else {
+                fallbackCopyText(text, toastMsg);
+            }
+        }
+
+        function fallbackCopyText(text, toastMsg) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.top = '-9999px';
+            textArea.style.left = '-9999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                showToast(toastMsg);
+            } catch (err) {
+                console.error('Copy failed', err);
+            }
+            document.body.removeChild(textArea);
+        }
+
+        let toastTimeout = null;
+        function showToast(msg) {
+            const toast = document.getElementById('toast-msg');
+            const toastText = document.getElementById('toast-text');
+            if (!toast) return;
+            if (toastText) toastText.innerText = msg;
+            
+            toast.classList.add('active');
+            
+            if (toastTimeout) clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('active');
+            }, 2400);
+        }
+
+        // Close popovers on outside click
+        document.addEventListener('click', (e) => {
+            const menu = document.getElementById('settings-dropdown-menu');
+            const trigger = document.getElementById('settings-menu-trigger');
+            if (menu && menu.style.display !== 'none') {
+                if (!menu.contains(e.target) && (!trigger || !trigger.contains(e.target))) {
+                    closeSettingsMenu();
+                }
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeScheduleModal();
+                closeSettingsMenu();
+            }
+        });
+
+        // Initialize UI state
+        applyTheme(getEffectiveTheme(), false);
+        updateSettingsBadges();
+
+        // Initial setup in "Без взноса" mode without triggering animation
+        setDownPaymentMode(false, true);
+</script>
+
+<!-- Payment Schedule Modal -->
+<div id="schedule-modal" class="schedule-modal-overlay" aria-hidden="true">
+    <div class="schedule-modal-backdrop" onclick="closeScheduleModal()"></div>
+    <div class="schedule-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="schedule-modal-title">
+        <div class="schedule-modal-header">
+            <div class="schedule-modal-title-wrap">
+                <div class="schedule-modal-icon-badge">
+                    <span class="material-symbols-outlined">calendar_month</span>
+                </div>
+                <div>
+                    <h3 id="schedule-modal-title" class="schedule-modal-title">График платежей</h3>
+                    <p id="schedule-modal-subtitle" class="schedule-modal-subtitle">Рассчитан на 12 месяцев</p>
+                </div>
+            </div>
+            <button type="button" class="schedule-modal-close-btn" onclick="closeScheduleModal()" aria-label="Закрыть">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+
+        <div class="schedule-modal-body">
+            <!-- Summary bar inside modal -->
+            <div class="schedule-summary-bar">
+                <div class="schedule-summary-item">
+                    <span class="schedule-summary-lbl">Сумма товара:</span>
+                    <span id="modal-summary-price" class="schedule-summary-val">100 000 ₽</span>
+                </div>
+                <div class="schedule-summary-item" id="modal-summary-down-wrap">
+                    <span class="schedule-summary-lbl">Первый взнос:</span>
+                    <span id="modal-summary-down" class="schedule-summary-val">0 ₽</span>
+                </div>
+                <div class="schedule-summary-item">
+                    <span class="schedule-summary-lbl">Ежемесячно:</span>
+                    <span id="modal-summary-monthly" class="schedule-summary-val">12 500 ₽</span>
+                </div>
+                <div class="schedule-summary-item">
+                    <span class="schedule-summary-lbl">Итого к оплате:</span>
+                    <span id="modal-summary-total" class="schedule-summary-val schedule-summary-val-gold">150 000 ₽</span>
+                </div>
+            </div>
+
+            <!-- Table Container -->
+            <div class="schedule-table-container">
+                <table class="schedule-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 10%;">№</th>
+                            <th style="width: 42%;">ОРИЕНТИР ДАТЫ</th>
+                            <th style="width: 24%; text-align: right;">СУММА ПЛАТЕЖА</th>
+                            <th style="width: 24%; text-align: right;">ОСТАТОК ДОЛГА</th>
+                        </tr>
+                    </thead>
+                    <tbody id="schedule-table-body">
+                        <!-- Dynamic Rows -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="schedule-modal-footer">
+            <div class="schedule-modal-actions">
+                <button type="button" class="btn-schedule-action" onclick="copyScheduleText()">
+                    <span class="material-symbols-outlined">content_copy</span>
+                    <span>Скопировать график</span>
+                </button>
+                <button type="button" class="btn-schedule-action btn-schedule-action-primary" onclick="saveAsPDF()">
+                    <span class="material-symbols-outlined">picture_as_pdf</span>
+                    <span>Сохранить PDF</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Dedicated Clean Print / PDF Statement (Shown only during Print / Save as PDF) -->
+<div id="print-sheet" class="print-only">
+    <div class="print-header">
+        <div class="print-brand">
+            <h1 class="print-logo">FinIsland</h1>
+            <p class="print-subtitle">Калькулятор рассрочки</p>
+        </div>
+        <div class="print-meta">
+            <p><strong>Дата расчета:</strong> <span id="print-date"></span></p>
+            <p><strong>Срок рассрочки:</strong> <span id="print-term"></span></p>
+        </div>
+    </div>
+
+    <div class="print-summary-card">
+        <h2 class="print-section-title">Параметры расчета</h2>
+        <div class="print-summary-grid">
+            <div class="print-summary-cell">
+                <span class="print-lbl">Стоимость товара:</span>
+                <span class="print-val" id="print-price">100 000 ₽</span>
+            </div>
+            <div class="print-summary-cell" id="print-down-cell">
+                <span class="print-lbl">Первоначальный взнос:</span>
+                <span class="print-val" id="print-down">0 ₽</span>
+            </div>
+            <div class="print-summary-cell">
+                <span class="print-lbl">Ежемесячный платеж:</span>
+                <span class="print-val print-val-highlight" id="print-monthly">12 500 ₽</span>
+            </div>
+            <div class="print-summary-cell">
+                <span class="print-lbl">Торговая наценка:</span>
+                <span class="print-val" id="print-markup">50 000 ₽</span>
+            </div>
+            <div class="print-summary-cell">
+                <span class="print-lbl">Итоговая стоимость:</span>
+                <span class="print-val print-val-bold" id="print-total">150 000 ₽</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="print-schedule-section">
+        <h2 class="print-section-title">График платежей</h2>
+        <table class="print-table">
+            <thead>
+                <tr>
+                    <th style="width: 8%; text-align: center;">№</th>
+                    <th style="width: 44%;">ОРИЕНТИР ДАТЫ</th>
+                    <th style="width: 24%; text-align: right;">СУММА ПЛАТЕЖА</th>
+                    <th style="width: 24%; text-align: right;">ОСТАТОК ДОЛГА</th>
+                </tr>
+            </thead>
+            <tbody id="print-table-body">
+                <!-- Injected via JS -->
+            </tbody>
+        </table>
+    </div>
+
+    <div class="print-footer">
+        <p>Расчет носит исключительно справочно-информационный характер.</p>
+    </div>
+</div>
+
+<!-- Copy Toast Notification -->
+<div id="toast-msg" class="toast-notification">
+    <span class="material-symbols-outlined toast-icon">check_circle</span>
+    <span id="toast-text">Скопировано!</span>
+</div>
+
+<!-- Service Worker Registration for Offline PWA -->
+<script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./sw.js')
+                .then((reg) => {
+                    console.log('FinIsland PWA: Service Worker успешно активен', reg.scope);
+                })
+                .catch((err) => {
+                    console.error('FinIsland PWA: Ошибка регистрации Service Worker', err);
+                });
+        });
+    }
+</script>
+
+</body>
+</html>
